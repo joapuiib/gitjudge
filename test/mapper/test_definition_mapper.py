@@ -2,8 +2,7 @@ import pytest
 from datetime import datetime
 
 from gitjudge.mapper.definition import map_definition
-from gitjudge.entity.definition import Definition
-from gitjudge.entity.expected_commit import ExpectedCommit
+from gitjudge.entity import Definition, ExpectedCommit
 
 def test_dictWithoutName_ShouldRaiseError():
     with pytest.raises(TypeError):
@@ -44,14 +43,14 @@ def test_dictNoExpectedCommits_ShouldBeEmptyList():
     assert len(definition.expected_commits) == 0
 
 def test_dictEmptyExpectedCommits_ShouldBeEmptyList():
-    d = {"name": "definition", "expected_commits": []}
+    d = {"name": "definition", "commits": {}}
     definition = map_definition(d)
     assert isinstance(definition.expected_commits, list)
     assert len(definition.expected_commits) == 0
 
 def test_dictWithExpectedCommits_ShouldCreateDefinition():
-    expected_commit = {"id": "1", "message": "message"}
-    d = {"name": "definition", "expected_commits": [expected_commit]}
+    expected_commit = {"message": "message"}
+    d = {"name": "definition", "commits": {"1": expected_commit}}
 
     definition = map_definition(d)
     assert len(definition.expected_commits) == 1

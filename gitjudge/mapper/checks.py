@@ -1,15 +1,10 @@
-from gitjudge.entity import ExpectedCommit
-from gitjudge.mapper import map_checks
+from gitjudge.entity import Checks
 
-def map_expected_commit(id: str, d: dict) -> ExpectedCommit:
+def map_checks(d: dict) -> Checks:
     if not isinstance(d, dict):
         raise TypeError('Expected dict object')
 
-    expected_commit = ExpectedCommit(id)
-
-    expected_commit.message = d.get('message')
-    expected_commit.starting_point = d.get('starting-point')
-
+    checks = Checks()
     # Parent and parents are mutually exclusive
     if 'parent' in d and 'parents' in d:
         raise ValueError('Expected commit cannot have both parent and parents')
@@ -18,7 +13,7 @@ def map_expected_commit(id: str, d: dict) -> ExpectedCommit:
     parent = d.get('parent')
     if parent:
         parents.append(parent)
-    expected_commit.parents = parents
+    checks.parents = parents
 
     if len(parents) > 2:
         raise ValueError('Expected commit cannot have more than 2 parents')
@@ -31,10 +26,8 @@ def map_expected_commit(id: str, d: dict) -> ExpectedCommit:
     tag = d.get('tag')
     if tag:
         tags.append(tag)
-    expected_commit.tags = tags
+    checks.tags = tags
 
-    checks = d.get('check', None)
-    if checks:
-        expected_commit.checks = map_checks(checks)
+    checks.cherry_pick = d.get('cherry-pick', None)
 
-    return expected_commit
+    return checks

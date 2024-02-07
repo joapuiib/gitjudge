@@ -1,4 +1,5 @@
 from datetime import datetime
+import yaml
 
 from gitjudge.entity.definition import Definition
 from gitjudge.entity.expected_commit import ExpectedCommit
@@ -30,8 +31,9 @@ def map_definition(d: dict) -> Definition:
     definition.limit_date = limit_date
 
     expected_commits = []
-    for commit in d.get("expected_commits", []):
-        expected_commits.append(map_expected_commit(commit))
+    for id_commit, commit in d.get("commits", {}).items():
+        expected_commit = map_expected_commit(id_commit, commit)
+        expected_commits.append(expected_commit)
     definition.expected_commits = expected_commits
 
     return definition
@@ -47,5 +49,5 @@ def load_definition(file_path: str) -> Definition:
     :raises: FileNotFoundError if the file does not exist
     """
     with open(file_path, "r") as file:
-        d = yaml.safe_load(stream)
+        d = yaml.safe_load(file)
         return map_definition(d)

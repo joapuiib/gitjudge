@@ -2,13 +2,11 @@ import os
 import git
 import subprocess
 
-from gitjudge.entity.expected_commit import ExpectedCommit
-from gitjudge.entity.commit import Commit
+from gitjudge.entity import Definition, ExpectedCommit, Commit
 
 class Repository:
     def __init__(self, directory_path):
         self.directory_path = directory_path
-
         if not os.path.isdir(directory_path):
             raise ValueError("Path does not exist")
 

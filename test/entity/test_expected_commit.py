@@ -1,5 +1,5 @@
 import pytest
-from gitjudge.entity.expected_commit import ExpectedCommit
+from gitjudge.entity import ExpectedCommit
 
 def test_givenConstructorWithoutID_shouldThrowError():
     with pytest.raises(TypeError):
@@ -13,3 +13,12 @@ def test_commitConstructorShouldHaveID():
     assert commit.parents == []
     assert commit.branches == []
     assert commit.tags == []
+    assert commit.checks == None
+
+def test_givenSetMessage_shouldSetMessage():
+    commit = ExpectedCommit(1, message="message")
+    assert commit.message == "message"
+
+def test_givenStartingPoint_shouldSetStartingPoint():
+    commit = ExpectedCommit(1, starting_point="main")
+    assert commit.starting_point == "main"

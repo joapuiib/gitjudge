@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 
 from gitjudge.entity.repository import Repository
+from gitjudge.entity.definition import Definition
+from gitjudge.entity.expected_commit import ExpectedCommit
 
 @pytest.fixture()
 def empty_repo(tmp_path):
@@ -37,3 +39,12 @@ def repo(tmp_path):
     repo.repo.git.checkout("main")
     return repo
 
+@pytest.fixture()
+def definition():
+    definition = Definition("test-definition")
+    definition.expected_commits = [
+        ExpectedCommit(id="1", message="1."),
+        ExpectedCommit(id="2", message="2."),
+        ExpectedCommit(id="3", message="3.", starting_point="branch1"),
+    ]
+    return definition

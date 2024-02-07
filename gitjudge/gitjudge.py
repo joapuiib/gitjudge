@@ -2,6 +2,7 @@
 import argparse
 
 from gitjudge.mapper.definition import load_definition
+from gitjudge.entity import Repository, Validator
 
 class GitJudge:
     def __init__(self, args):
@@ -9,7 +10,11 @@ class GitJudge:
         self.definition = load_definition(args.definition_file)
 
     def validate(self, repo_dir):
-        print(f"Grading {repo_dir} with {self.definition}")
+        repo = Repository(repo_dir)
+        validator = Validator(repo, self.definition)
+        validator.validate()
+        for _, v in validator.found_commits.items():
+            print(f"Found: {v}")
 
 def main():
     parser = argparse.ArgumentParser()

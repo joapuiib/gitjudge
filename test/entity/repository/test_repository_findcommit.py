@@ -1,7 +1,6 @@
 import pytest
 
-from gitjudge.entity.commit import Commit
-from gitjudge.entity.expected_commit import ExpectedCommit
+from gitjudge.entity import Commit, ExpectedCommit
 
 def testFindCommit_GivenNonExpectedCommitParameter_ShouldRaiseError(empty_repo):
     with pytest.raises(TypeError):

@@ -1,12 +1,14 @@
 class ExpectedCommit:
-    def __init__(self, id: str):
+    def __init__(self, id: str, message: str = None, starting_point: str = None):
         self.id = id
-        self.message = None
-        self.starting_point = None
+        self.message = message
+        self.starting_point = starting_point
 
         self.parents = []
         self.branches = []
         self.tags = []
+
+        self.checks = None
 
     def set_message(self, message):
         self.message = message
@@ -20,3 +22,22 @@ class ExpectedCommit:
     def add_parent(self, parent):
         self.parents.append(parent)
 
+    def __str__(self):
+        args = []
+        args.append(f"id={self.id}")
+        if self.message:
+            args.append(f"message={self.message}")
+        if self.starting_point:
+            args.append(f"starting_point={self.starting_point}")
+        if self.parents:
+            args.append(f"parents={self.parents}")
+        if self.branches:
+            args.append(f"branches={self.branches}")
+        if self.tags:
+            args.append(f"tags={self.tags}")
+        if self.checks:
+            args.append(f"checks={self.checks}")
+        return f"ExpectedCommit({', '.join(args)})"
+
+    def __repr__(self):
+        return self.__str__()

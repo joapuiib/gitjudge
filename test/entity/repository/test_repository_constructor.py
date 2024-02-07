@@ -3,10 +3,10 @@ import pyfakefs
 import git
 import subprocess
 import os
-from gitjudge.entity.repository import Repository
 
-############# Constructor tests #############
-def test_givenRepositoryWhithoutPath_shouldRaiseError():
+from gitjudge.entity import Definition, Repository
+
+def test_givenRepositoryWhithoutArgs_shouldRaiseError():
     with pytest.raises(TypeError):
         Repository()
 
