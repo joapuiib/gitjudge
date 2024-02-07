@@ -1,5 +1,5 @@
 class ExpectedCommit:
-    def __init__(self, id):
+    def __init__(self, id: str):
         self.id = id
         self.message = None
         self.starting_point = None
