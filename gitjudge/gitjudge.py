@@ -13,8 +13,6 @@ class GitJudge:
         repo = Repository(repo_dir)
         validator = Validator(repo, self.definition)
         validator.validate()
-        for _, v in validator.found_commits.items():
-            print(f"Found: {v}")
 
 def main():
     parser = argparse.ArgumentParser()

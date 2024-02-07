@@ -1,3 +1,5 @@
+from gitjudge.entity import Commit
+
 class ExpectedCommit:
     def __init__(self, id: str, message: str = None, starting_point: str = None):
         self.id = id
@@ -41,3 +43,13 @@ class ExpectedCommit:
 
     def __repr__(self):
         return self.__str__()
+
+    def validate(self, commit) -> bool:
+        if not isinstance(commit, Commit):
+            raise TypeError("ExpectedCommit.validate requires a Commit object")
+
+        if self.checks:
+            return self.checks.validate(commit)
+
+        return {}
+

@@ -84,3 +84,37 @@ def testFindCommit_GivenExistingCommitThatInSpecificStartingPoint_ShouldReturnCo
     assert result.id == "3"
     assert result.message == "3. added branch1.md"
 
+def testFindCommit_GivenCommitWithTag_ShouldReturnCommitWithTags(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("1")
+    expected_commit.message = "1."
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert result.tags == ["T1"]
+
+def testFindCommit_GivenCommitWithMultipleTags_ShouldReturnCommitWithTags(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("2")
+    expected_commit.message = "2."
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert result.tags == ["T2", "T3"]
+
+def testFindCommit_GivenCommitWithNoTags_ShouldReturnCommitWithNoTags(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("3")
+    expected_commit.message = "3."
+    expected_commit.starting_point = "branch1"
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert result.tags == []
+

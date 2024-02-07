@@ -23,6 +23,7 @@ def repo(tmp_path):
     Path.touch(repo.directory_path / "file1.md")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="1. added file1.md")
+    repo.repo.git.tag("T1")
 
     repo.repo.git.branch("-m", "main")
 
@@ -30,11 +31,14 @@ def repo(tmp_path):
         f.write("# Populated repo")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="2. modified file1.md")
+    repo.repo.git.tag("T2")
+    repo.repo.git.tag("T3")
 
     repo.repo.git.checkout("-b", "branch1")
     Path.touch(repo.directory_path / "branch1.md")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="3. added branch1.md")
+
 
     repo.repo.git.checkout("main")
     return repo

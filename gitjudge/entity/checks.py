@@ -1,3 +1,5 @@
+from gitjudge.entity import Commit
+
 class Checks:
     def __init__(self):
         self.tags = []
@@ -16,3 +18,26 @@ class Checks:
 
     def __repr__(self):
         return self.__str__()
+
+    def validate(self, commit: Commit) -> bool:
+        checks = {}
+        if not isinstance(commit, Commit):
+            raise TypeError("Checks.validate requires a Commit object")
+
+        if self.tags:
+            checks["tags"] = {}
+            for tag in self.tags:
+                if tag in commit.tags:
+                    checks["tags"][tag] = True
+                else:
+                    checks["tags"][tag] = False
+
+        if self.branches:
+            checks["branches"] = {}
+            for branch in self.branches:
+                if branch in commit.branches:
+                    checks["branches"][branch] = True
+                else:
+                    checks["branches"][branch] = False
+
+        return checks

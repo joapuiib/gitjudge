@@ -2,7 +2,7 @@ import os
 import git
 import subprocess
 
-from gitjudge.entity import Definition, ExpectedCommit, Commit
+from gitjudge.entity import Definition, Commit, ExpectedCommit
 
 class Repository:
     def __init__(self, directory_path):
@@ -12,10 +12,39 @@ class Repository:
 
         self.repo = git.Repo(directory_path)
 
-    def log(self):
-        git_log_command = "git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+
+    def log_command(self, start=None, end=None):
+        git_log_command = "git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'" # --all"
+
+        if start is not None and end is not None:
+            short_start = start.short_hash()
+            short_end = end.short_hash()
+            git_log_command = git_log_command + f" --ancestry-path {short_start}~1..{short_end}"
+        elif start is not None:
+            short_start = start.short_hash()
+            git_log_command = git_log_command + f" {short_start}"
+        elif end is not None:
+            short_end = end.short_hash()
+            git_log_command = git_log_command + f"..{short_end}"
+        return git_log_command
+
+    def log(self, start=None, end=None):
+        git_log_command = self.log_command(start, end)
         result = subprocess.run(git_log_command, cwd=self.directory_path, shell=True, capture_output=True, text=True)
         return result.stdout
+
+    def print_log(self, start=None, end=None):
+        git_log_command = self.log_command(start, end)
+        subprocess.run(git_log_command, cwd=self.directory_path, shell=True)
+
+
+    # Not unit tested, but tested in find_commit
+    def get_tags_for_commit(self, commit: git.Commit):
+        tags = []
+        for tag in self.repo.tags:
+            if tag.commit.hexsha == commit.hexsha:
+                tags.append(tag.name)
+        return tags
 
 
     def find_commit(self, expected_commit, parent_commit=None):
@@ -58,5 +87,7 @@ class Repository:
             result = Commit(expected_commit.id)
             result.message = commit_found.message.strip()
             result.hash = commit_found.hexsha
+            result.tags = self.get_tags_for_commit(commit_found)
+            result.comitted_date = commit_found.committed_datetime
             return result
         return None
