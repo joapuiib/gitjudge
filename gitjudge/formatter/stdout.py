@@ -19,14 +19,19 @@ def print_expected_commit(expected_commit: ExpectedCommit):
 
 def print_commit(commit: Commit, checks: dict, limit_date: str = None):
     correct = True
-    for category, items in checks.items():
-        for k, valid in items.items():
-            if not valid:
+    for category, item in checks.items():
+        if isinstance(item, dict):
+            for k, valid in item.items():
+                if not valid:
+                    correct = False
+                    break
+        elif isinstance(item, bool):
+            if not item:
                 correct = False
                 break
 
     short_hash = commit.short_hash()
-    message = commit.message
+    message = commit.short_message()
     commit_date = commit.committed_date
 
     color_title = Fore.GREEN if correct else Fore.RED
@@ -45,6 +50,26 @@ def print_commit(commit: Commit, checks: dict, limit_date: str = None):
         print(f"Last change: {commit_date}")
         if commit_date > limit_date:
             print(Fore.RED + "COMPTE!! El tag ha segut modificat després de la data d'entrega" + Fore.RESET)
+
+    if checks.get("cherry_pick") != None:
+        if not commit.cherry_picked_from:
+            print(f"- Cherry-picked from commit {Fore.RED}not found{Fore.RESET}.")
+        else:
+            cherry_picked = commit.is_cherry_picked
+            cherry_pick_result = f"{Fore.GREEN}YES{Fore.RESET}" if cherry_picked else f"{Fore.RED}NO{Fore.RESET}"
+            cherry_pick_id = commit.cherry_picked_from.id
+            cherry_pick_short_hash = commit.cherry_picked_from.short_hash()
+            print(f"- Is cherry-picked from {Fore.YELLOW}'({cherry_pick_id}) {cherry_pick_short_hash}'{Fore.RESET}? {cherry_pick_result}")
+
+    if checks.get("reverts") != None:
+        if not commit.reverting_commit:
+            print(f"- Reverting commit {Fore.RED}not found{Fore.RESET}.")
+        else:
+            reverts = commit.reverts
+            revert_result = f"{Fore.GREEN}YES{Fore.RESET}" if reverts else f"{Fore.RED}NO{Fore.RESET}"
+            revert_id = commit.reverting_commit.id
+            revert_short_hash = commit.reverting_commit.short_hash()
+            print(f"- Reverts {Fore.YELLOW}'({revert_id}) {revert_short_hash}'{Fore.RESET}? {revert_result}")
 
     if checks.get("tags", None):
         for tag, valid in checks["tags"].items():

@@ -58,3 +58,8 @@ def testMap_givenDictWithCherryPick_shouldSetCherryPick():
     expected_checks_dict = {'cherry-pick': '1'}
     expected_checks = map_checks(expected_checks_dict)
     assert expected_checks.cherry_pick == '1'
+
+def testMap_givenDictWithReverts_shouldSetReverts():
+    expected_checks_dict = {'reverts': '1'}
+    expected_checks = map_checks(expected_checks_dict)
+    assert expected_checks.reverts == '1'

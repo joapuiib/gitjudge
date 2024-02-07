@@ -89,5 +89,6 @@ class Repository:
             result.hash = commit_found.hexsha
             result.tags = self.get_tags_for_commit(commit_found)
             result.comitted_date = commit_found.committed_datetime
+            result.diff = commit_found.diff()
             return result
         return None

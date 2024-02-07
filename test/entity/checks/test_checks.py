@@ -7,4 +7,5 @@ def test_chekcs_should_have_default_values():
     assert c.tags == []
     assert c.branches == []
     assert c.cherry_pick == None
+    assert c.reverts == None
 

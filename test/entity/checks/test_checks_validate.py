@@ -7,3 +7,5 @@ def test_chekcsValidate_WrongParameters_ShouldRaiseError():
     with pytest.raises(TypeError):
         checks.validate("not a commit")
 
+
+# TODO: A lot of validating tests

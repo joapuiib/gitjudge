@@ -44,12 +44,15 @@ class ExpectedCommit:
     def __repr__(self):
         return self.__str__()
 
-    def validate(self, commit) -> bool:
+    def validate(self, commit: Commit, found_commits: dict = {}) -> bool:
         if not isinstance(commit, Commit):
             raise TypeError("ExpectedCommit.validate requires a Commit object")
 
+        if not isinstance(found_commits, dict):
+            raise TypeError("ExpectedCommit.validate requires a dict object")
+
         if self.checks:
-            return self.checks.validate(commit)
+            return self.checks.validate(commit, found_commits)
 
         return {}
 
