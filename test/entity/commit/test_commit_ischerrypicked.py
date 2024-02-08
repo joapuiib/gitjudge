@@ -6,7 +6,11 @@ def test_giventNoCommit_shouldRaiseError():
     with pytest.raises(TypeError):
         commit.is_cherry_picked_from()
 
-def test_givenCommitWithDifferentNames_shouldReturnFalse():
+def test_givenCommitWithNoCherryPick_shouldReturnFalse():
+    commit = Commit(1, message="commit")
+    assert not commit.is_cherry_picked_from(None)
+
+def test_givenCommitWithEmptyDiff_shouldReturnFalse():
     commit = Commit(1, message="commit")
     commit2 = Commit(2, message="commit2")
     assert not commit.is_cherry_picked_from(commit2)

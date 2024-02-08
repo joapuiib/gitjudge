@@ -1,6 +1,6 @@
 import pytest
 
-from gitjudge.entity import Commit, ExpectedCommit
+from gitjudge.entity import Commit, ExpectedCommit, CheckResult
 
 def test_validateNonCommit_shouldRaiseError():
     expected = ExpectedCommit("id")
@@ -12,7 +12,8 @@ def test_expectedCommitWithoutChecks_shouldValidate(mocker):
     commit = mocker.create_autospec(Commit)
     result = expected.validate(commit)
 
-    assert result == {}
+    assert isinstance(result, CheckResult)
+    assert result.commit == commit
 
 def test_expectedCommitWithChecks_shouldValidate(mocker):
     expected_result = {"tags": {"T": True}}

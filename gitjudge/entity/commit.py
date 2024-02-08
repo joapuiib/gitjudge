@@ -1,7 +1,7 @@
 import re
 
 class Commit:
-    def __init__(self, id, message="", diff=""):
+    def __init__(self, id, message="", diff="", tags=[]):
         self.id = id
         self.message = message
         self.hash = ""
@@ -9,7 +9,7 @@ class Commit:
         self._diff = diff
 
         self.branches = []
-        self.tags = []
+        self.tags = tags
         self.parents = []
 
 
@@ -51,14 +51,14 @@ class Commit:
         return self._diff
 
 
-    def is_cherry_picked_from(self, commit):
+    def is_cherry_picked_from(self, other_commit):
         """
         Check if this commit is a cherry-pick of the given commit.
 
         There's no way to know for sure if a commit is a cherry-pick of another,
-        but we can make an educated guess by comparing the commit message and the
-        diff of the two commits. If they are the same, then it's very likely that
-        this commit is a cherry-pick of the given commit.
+        but we can make an educated guess by comparing the diff of the two commits.
+        If they are the same, then it's very likely that this commit is
+        a cherry-pick of the given commit.
 
         Args:
             commit (Commit): The commit to check if this commit is a cherry-pick of.
@@ -66,8 +66,9 @@ class Commit:
         Returns:
             bool: True if this commit is a cherry-pick of the given commit, False otherwise.
         """
-        is_cherry_picked = self.message == commit.message and self.diff() == commit.diff()
-        return is_cherry_picked
+        if not self.diff() or not other_commit:
+            return False
+        return self.diff() == other_commit.diff()
 
 
     def reverts(self, commit):

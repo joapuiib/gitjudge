@@ -1,7 +1,5 @@
 # TODO
-- Refactor results
-- Test validation
-    - Tags
-    - Cherry-pick
-    - Revert
+- Integration tests
 - Python getter/setters
+- Error if starting point doesnt exist
+- Commit message regex

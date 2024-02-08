@@ -1,4 +1,4 @@
-from gitjudge.entity import Commit
+from gitjudge.entity import Commit, CheckResult
 
 class ExpectedCommit:
     def __init__(self, id: str, message: str = None, starting_point: str = None):
@@ -54,5 +54,5 @@ class ExpectedCommit:
         if self.checks:
             return self.checks.validate(commit, found_commits)
 
-        return {}
+        return CheckResult(commit)
 

@@ -28,17 +28,18 @@ class Checks:
             raise TypeError("Checks.validate requires a Commit object")
 
         if self.tags:
-            checks["tags"] = {}
             for tag in self.tags:
                 tag_present = tag in commit.tags
                 check_result.add_tag(tag, tag_present)
 
         if self.cherry_pick:
-            check_result.check_cherry_pick()
             referenced_commit = found_commits.get(self.cherry_pick)
             is_cherry_picked = commit.is_cherry_picked_from(referenced_commit)
-            if referenced_commit:
-                is_cherry_picked = commit.is_cherry_picked_from(referenced_commit)
-                check_result.set_cherry_picked(referenced_commit, is_cherry_picked)
+            check_result.set_cherry_picked(referenced_commit, is_cherry_picked)
 
-        return checks
+        if self.reverts:
+            referenced_commit = found_commits.get(self.reverts)
+            is_reverted = commit.reverts(referenced_commit)
+            check_result.set_reverted(referenced_commit, is_reverted)
+
+        return check_result

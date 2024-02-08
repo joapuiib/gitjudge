@@ -1,6 +1,6 @@
 from colorama import Fore, Style
 
-from gitjudge.entity import Commit, ExpectedCommit
+from gitjudge.entity import Commit, ExpectedCommit, CheckResult
 
 def print_expected_commit(expected_commit: ExpectedCommit):
     def print_item(name, value):
@@ -17,18 +17,8 @@ def print_expected_commit(expected_commit: ExpectedCommit):
     if expected_commit.parents:
         print_item("Parents", expected_commit.parents)
 
-def print_commit(commit: Commit, checks: dict, limit_date: str = None):
-    correct = True
-    for category, item in checks.items():
-        if isinstance(item, dict):
-            for k, valid in item.items():
-                if not valid:
-                    correct = False
-                    break
-        elif isinstance(item, bool):
-            if not item:
-                correct = False
-                break
+def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = None):
+    correct = check_result.is_correct()
 
     short_hash = commit.short_hash()
     message = commit.short_message()
@@ -51,27 +41,27 @@ def print_commit(commit: Commit, checks: dict, limit_date: str = None):
         if commit_date > limit_date:
             print(Fore.RED + "COMPTE!! El tag ha segut modificat després de la data d'entrega" + Fore.RESET)
 
-    if checks.get("cherry_pick") != None:
-        if not commit.cherry_picked_from:
+    if check_result.has_checked_cherry_pick():
+        if not check_result.has_found_cherry_pick_commit():
             print(f"- Cherry-picked from commit {Fore.RED}not found{Fore.RESET}.")
         else:
-            cherry_picked = commit.is_cherry_picked
+            cherry_picked = check_result.is_cherry_picked()
             cherry_pick_result = f"{Fore.GREEN}YES{Fore.RESET}" if cherry_picked else f"{Fore.RED}NO{Fore.RESET}"
-            cherry_pick_id = commit.cherry_picked_from.id
-            cherry_pick_short_hash = commit.cherry_picked_from.short_hash()
+            cherry_pick_id = check_result.cherry_picked_from_commit.id
+            cherry_pick_short_hash = check_result.cherry_picked_from_commit.short_hash()
             print(f"- Is cherry-picked from {Fore.YELLOW}'({cherry_pick_id}) {cherry_pick_short_hash}'{Fore.RESET}? {cherry_pick_result}")
 
-    if checks.get("reverts") != None:
-        if not commit.reverting_commit:
+
+    if check_result.has_checked_revert():
+        if not check_result.has_found_reverted_commit():
             print(f"- Reverting commit {Fore.RED}not found{Fore.RESET}.")
         else:
-            reverts = commit.is_reverted
+            reverts = check_result.is_reverted()
             revert_result = f"{Fore.GREEN}YES{Fore.RESET}" if reverts else f"{Fore.RED}NO{Fore.RESET}"
-            revert_id = commit.reverting_commit.id
-            revert_short_hash = commit.reverting_commit.short_hash()
+            revert_id = check_result.reverted_from_commit.id
+            revert_short_hash = check_result.reverted_from_commit.short_hash()
             print(f"- Reverts {Fore.YELLOW}'({revert_id}) {revert_short_hash}'{Fore.RESET}? {revert_result}")
 
-    if checks.get("tags", None):
-        for tag, valid in checks["tags"].items():
-            tag_result = f"{Fore.GREEN}YES{Fore.RESET}" if valid else f"{Fore.RED}NO{Fore.RESET}"
-            print(f"- Has {Fore.YELLOW}'{tag}'{Fore.RESET} tag? {tag_result}")
+    for tag, valid in check_result.tags.items():
+        tag_result = f"{Fore.GREEN}YES{Fore.RESET}" if valid else f"{Fore.RED}NO{Fore.RESET}"
+        print(f"- Has {Fore.YELLOW}'{tag}'{Fore.RESET} tag? {tag_result}")

@@ -26,8 +26,8 @@ class Validator:
                 continue
 
             self.found_commits[expected_commit.id] = commit
-            checks = expected_commit.validate(commit, self.found_commits)
-            print_commit(commit, checks)
+            check_result = expected_commit.validate(commit, self.found_commits)
+            print_commit(commit, check_result)
 
             print()
 

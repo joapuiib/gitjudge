@@ -22,3 +22,7 @@ def test_commitConstructorWithMessage_shouldHaveMessage():
 def test_commitConstructorWithDiff_shouldHaveDiff():
     commit = Commit(1, diff="diff")
     assert commit._diff == "diff"
+
+def test_commitConstructorWithTags_shouldHaveTags():
+    commit = Commit(1, tags=["tag1", "tag2"])
+    assert commit.tags == ["tag1", "tag2"]
