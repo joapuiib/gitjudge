@@ -65,7 +65,7 @@ def print_commit(commit: Commit, checks: dict, limit_date: str = None):
         if not commit.reverting_commit:
             print(f"- Reverting commit {Fore.RED}not found{Fore.RESET}.")
         else:
-            reverts = commit.reverts
+            reverts = commit.is_reverted
             revert_result = f"{Fore.GREEN}YES{Fore.RESET}" if reverts else f"{Fore.RED}NO{Fore.RESET}"
             revert_id = commit.reverting_commit.id
             revert_short_hash = commit.reverting_commit.short_hash()

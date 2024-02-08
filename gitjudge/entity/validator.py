@@ -16,6 +16,7 @@ class Validator:
 
     def validate(self):
         for expected_commit in self.definition.expected_commits:
+            # print(expected_commit)
             print(f"{Fore.CYAN}Validating commit {expected_commit.id}{Fore.RESET}")
             commit = self.repo.find_commit(expected_commit)
             if not commit:

@@ -7,7 +7,11 @@ def map_expected_commit(id: str, d: dict) -> ExpectedCommit:
 
     expected_commit = ExpectedCommit(id)
 
-    expected_commit.message = d.get('message')
+    if 'message' in d:
+        expected_commit.message = d.get('message')
+        if not expected_commit.message:
+            raise ValueError('Expected commit message cannot be empty')
+
     expected_commit.starting_point = d.get('starting-point')
 
     # Parent and parents are mutually exclusive

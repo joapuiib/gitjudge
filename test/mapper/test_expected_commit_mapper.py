@@ -13,6 +13,11 @@ def testMap_givenEmptyDictWithId_shouldReturnExpectedCommit():
     assert isinstance(expected_commit, ExpectedCommit)
     assert expected_commit.id == '1'
 
+def testMap_givenEmptyMessage_shouldRaiseError():
+    expected_commit_dict = {'message': None}
+    with pytest.raises(ValueError):
+        map_expected_commit(1, expected_commit_dict)
+
 def testMap_givenDictWithMessage_messageShouldBeSet():
     expected_commit_dict = {'message': 'Message'}
     expected_commit = map_expected_commit('1', expected_commit_dict)

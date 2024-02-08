@@ -51,7 +51,7 @@ class Checks:
                 checks["cherry_pick"] = commit.is_cherry_picked_from(referenced_commit)
 
         if self.reverts:
-            referenced_commit = found_commits.get(self.cherry_pick)
+            referenced_commit = found_commits.get(self.reverts)
             if not referenced_commit:
                 checks["reverts"] = False
             else:

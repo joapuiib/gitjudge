@@ -89,6 +89,13 @@ class Repository:
             result.hash = commit_found.hexsha
             result.tags = self.get_tags_for_commit(commit_found)
             result.comitted_date = commit_found.committed_datetime
-            result.diff = commit_found.diff()
+
+            show_output = self.repo.git.show(commit_found.hexsha, color='always')
+            diff_start = show_output.find('@@')
+            self._diff = ""
+            if diff_start != -1:
+                result._diff = show_output[diff_start:]
+
             return result
+
         return None
