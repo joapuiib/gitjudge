@@ -1,22 +1,16 @@
 import re
 
 class Commit:
-    def __init__(self, id):
+    def __init__(self, id, message="", diff=""):
         self.id = id
+        self.message = message
         self.hash = ""
-        self.message = ""
         self.committed_date = None
-        self._diff = None
+        self._diff = diff
 
         self.branches = []
         self.tags = []
         self.parents = []
-
-        self.is_cherry_picked = False
-        self.cherry_picked_from = None
-
-        self.is_reverted = False
-        self.reverting_commit = None
 
 
     def short_hash(self):
@@ -46,14 +40,9 @@ class Commit:
         return self.__str__()
 
 
-    def is_cherry_picked_from(self, commit):
-        self.is_cherry_picked = self.message == commit.message \
-            and self.diff() == commit.diff()
-        self.cherry_picked_from = commit
-        return self.is_cherry_picked
-
     def show_diff(self, colored=True):
         print(self.diff(colored=colored))
+
 
     def diff(self, colored=False):
         if not colored:
@@ -61,7 +50,41 @@ class Commit:
             return ansi_escape.sub('', self._diff)
         return self._diff
 
+
+    def is_cherry_picked_from(self, commit):
+        """
+        Check if this commit is a cherry-pick of the given commit.
+
+        There's no way to know for sure if a commit is a cherry-pick of another,
+        but we can make an educated guess by comparing the commit message and the
+        diff of the two commits. If they are the same, then it's very likely that
+        this commit is a cherry-pick of the given commit.
+
+        Args:
+            commit (Commit): The commit to check if this commit is a cherry-pick of.
+
+        Returns:
+            bool: True if this commit is a cherry-pick of the given commit, False otherwise.
+        """
+        is_cherry_picked = self.message == commit.message and self.diff() == commit.diff()
+        return is_cherry_picked
+
+
     def reverts(self, commit):
+        """
+        Check if this commit reverts the given commit.
+
+        There's no way to know for sure if a commit reverts another, but we can make
+        an educated guess by comparing the diff of the two commits. If the diff of this
+        commit contains the diff of the given commit with the signs inverted, then it's
+        very likely that this commit reverts the given commit.
+
+        Args:
+            commit (Commit): The commit to check if this commit reverts.
+
+        Returns:
+            bool: True if this commit reverts the given commit, False otherwise.
+        """
         self_diff_lines = set(self.diff().splitlines())
         commit_diff_lines = set(commit.diff().splitlines())
 
@@ -73,8 +96,5 @@ class Commit:
                 if line.startswith(("+", "-")) \
         }
 
-        self.is_reverted = expected_revert_lines <= commit_diff_lines
-        self.reverting_commit = commit
-
-        return self.is_reverted
+        return expected_revert_lines <= commit_diff_lines
 

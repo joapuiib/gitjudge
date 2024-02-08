@@ -1,4 +1,4 @@
-from gitjudge.entity import Commit
+from gitjudge.entity import Commit, CheckResult
 
 class Checks:
     def __init__(self):
@@ -23,39 +23,22 @@ class Checks:
         return self.__str__()
 
     def validate(self, commit: Commit, found_commits:dict = {}) -> bool:
-        checks = {}
+        check_result = CheckResult(commit)
         if not isinstance(commit, Commit):
             raise TypeError("Checks.validate requires a Commit object")
 
         if self.tags:
             checks["tags"] = {}
             for tag in self.tags:
-                if tag in commit.tags:
-                    checks["tags"][tag] = True
-                else:
-                    checks["tags"][tag] = False
-
-        if self.branches:
-            checks["branches"] = {}
-            for branch in self.branches:
-                if branch in commit.branches:
-                    checks["branches"][branch] = True
-                else:
-                    checks["branches"][branch] = False
+                tag_present = tag in commit.tags
+                check_result.add_tag(tag, tag_present)
 
         if self.cherry_pick:
+            check_result.check_cherry_pick()
             referenced_commit = found_commits.get(self.cherry_pick)
-            if not referenced_commit:
-                checks["cherry_pick"] = False
-            else:
-                checks["cherry_pick"] = commit.is_cherry_picked_from(referenced_commit)
+            is_cherry_picked = commit.is_cherry_picked_from(referenced_commit)
+            if referenced_commit:
+                is_cherry_picked = commit.is_cherry_picked_from(referenced_commit)
+                check_result.set_cherry_picked(referenced_commit, is_cherry_picked)
 
-        if self.reverts:
-            referenced_commit = found_commits.get(self.reverts)
-            if not referenced_commit:
-                checks["reverts"] = False
-            else:
-                checks["reverts"] = commit.reverts(referenced_commit)
-
-        # TODO: Implement revert checks
         return checks
