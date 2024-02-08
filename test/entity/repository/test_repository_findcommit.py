@@ -35,6 +35,20 @@ def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
     assert len(result.hash) > 0
     assert result.message == "1. added file1.md"
 
+def testFindCommit_GivenPatterMessage_ShouldReturnCommit(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("1")
+    expected_commit.message = "1.[ ]*added"
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert isinstance(result, Commit)
+    assert result.id == "1"
+    assert len(result.hash) > 0
+    assert result.message == "1. added file1.md"
+
 def testFindCommit_GivenWrongParentCommit_ShouldRaiseError(repo):
     # Arrange
     expected_commit = ExpectedCommit("2")

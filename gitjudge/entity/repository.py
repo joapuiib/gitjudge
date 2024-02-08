@@ -1,6 +1,7 @@
 import os
 import git
 import subprocess
+import re
 
 from gitjudge.entity import Definition, Commit, ExpectedCommit
 
@@ -79,7 +80,8 @@ class Repository:
 
         commit_found = None
         for commit in self.repo.iter_commits(rev=rev):
-            if commit.message.lower().startswith(expected_commit.message.lower()):
+            expected_commit_pattern = "^" + expected_commit.message + ".*"
+            if re.match(expected_commit_pattern, commit.message):
                 commit_found = commit
                 break
 
