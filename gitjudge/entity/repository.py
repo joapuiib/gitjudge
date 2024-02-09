@@ -80,8 +80,8 @@ class Repository:
 
         commit_found = None
         for commit in self.repo.iter_commits(rev=rev):
-            expected_commit_pattern = "^" + expected_commit.message + ".*"
-            if re.match(expected_commit_pattern, commit.message):
+            expected_commit_pattern = re.compile("^" + expected_commit.message + ".*", re.IGNORECASE)
+            if re.match(expected_commit_pattern, commit.message.strip()):
                 commit_found = commit
                 break
 
