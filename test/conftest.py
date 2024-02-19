@@ -15,6 +15,13 @@ def empty_repo(tmp_path):
 
 @pytest.fixture()
 def repo(tmp_path):
+    """
+    * ae33661 - (0 seconds ago) 3. added branch1.md - Joan Puigcerver (branch1)
+    | * 058a064 - (0 seconds ago) 4. added branch2.md - Joan Puigcerver (branch2)
+    |/
+    * 8ba96a6 - (0 seconds ago) 2. modified file1.md - Joan Puigcerver (HEAD -> main, tag: T3, tag: T2)
+    * 1ebb397 - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
+    """
     d = tmp_path / "repository"
     d.mkdir()
     os.system(f"git init {d}")
@@ -38,6 +45,12 @@ def repo(tmp_path):
     Path.touch(repo.directory_path / "branch1.md")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="3. added branch1.md")
+
+    repo.repo.git.checkout("main")
+    repo.repo.git.checkout("-b", "branch2")
+    Path.touch(repo.directory_path / "branch2.md")
+    repo.repo.git.add('--all')
+    repo.repo.git.commit(m="4. added branch2.md")
 
 
     repo.repo.git.checkout("main")

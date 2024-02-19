@@ -14,7 +14,7 @@ class Repository:
         self.repo = git.Repo(directory_path)
 
 
-    def log_command(self, start=None, end=None):
+    def log_command(self, start=None, end=None, branches=None, all=False):
         git_log_command = "git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'" # --all"
 
         if start is not None and end is not None:
@@ -27,15 +27,24 @@ class Repository:
         elif end is not None:
             short_end = end.short_hash()
             git_log_command = git_log_command + f"..{short_end}"
+
+        if branches is not None:
+            git_log_command = git_log_command + " " + " ".join(branches)
+
+        if all:
+            git_log_command = git_log_command + " --all"
+
+
+        # print(git_log_command)
         return git_log_command
 
-    def log(self, start=None, end=None):
-        git_log_command = self.log_command(start, end)
+    def log(self, start=None, end=None, branches=None, all=False):
+        git_log_command = self.log_command(start, end, branches, all)
         result = subprocess.run(git_log_command, cwd=self.directory_path, shell=True, capture_output=True, text=True)
         return result.stdout
 
-    def print_log(self, start=None, end=None):
-        git_log_command = self.log_command(start, end)
+    def print_log(self, start=None, end=None, branches=None, all=False):
+        git_log_command = self.log_command(start, end, branches, all)
         subprocess.run(git_log_command, cwd=self.directory_path, shell=True)
 
 

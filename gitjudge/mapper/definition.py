@@ -1,9 +1,10 @@
 from datetime import datetime
 import yaml
 
-from gitjudge.entity.definition import Definition
-from gitjudge.entity.expected_commit import ExpectedCommit
-from gitjudge.mapper.expected_commit import map_expected_commit
+from gitjudge.entity import Definition
+from gitjudge.entity import ExpectedCommit
+from gitjudge.mapper import map_expected_commit
+from gitjudge.mapper import map_log_options
 
 def parse_date(date_str):
     formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M" ,"%Y-%m-%d"]
@@ -35,6 +36,9 @@ def map_definition(d: dict) -> Definition:
         expected_commit = map_expected_commit(id_commit, commit)
         expected_commits.append(expected_commit)
     definition.expected_commits = expected_commits
+
+    if d.get("log_options"):
+        definition.log_options = map_log_options(d["log_options"])
 
     return definition
 

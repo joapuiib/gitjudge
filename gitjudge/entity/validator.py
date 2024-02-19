@@ -37,4 +37,9 @@ class Validator:
         last_commit = self.found_commits[max_id]
 
         print("# Repository log:")
-        self.repo.print_log(start=first_commit, end=last_commit)
+        self.repo.print_log(
+            start=first_commit,
+            end=last_commit,
+            branches=self.definition.log_options.branches,
+            all=self.definition.log_options.all
+        )

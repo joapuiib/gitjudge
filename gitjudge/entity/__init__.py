@@ -1,3 +1,4 @@
+from .log_options import LogOptions
 from .commit import Commit
 from .checkresult import CheckResult, CherryPickState, RevertState
 from .expected_commit import ExpectedCommit
