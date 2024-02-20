@@ -28,7 +28,7 @@ def map_checks(d: dict) -> Checks:
         tags.append(tag)
     checks.tags = tags
 
-    checks.cherry_pick = d.get('cherry-pick', None)
+    checks.cherry_pick = d.get('cherry-pick', None) or d.get('cherry-picks', None)
     checks.reverts = d.get('reverts', None)
 
     return checks
