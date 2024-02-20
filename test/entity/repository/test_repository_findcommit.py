@@ -6,9 +6,19 @@ def testFindCommit_GivenNonExpectedCommitParameter_ShouldRaiseError(empty_repo):
     with pytest.raises(TypeError):
         empty_repo.find_commit(1)
 
+
 def testFindCommit_GivenEmptyRepo_ShouldReturnNone(empty_repo):
     expected_commit = ExpectedCommit("1")
     assert empty_repo.find_commit(expected_commit) == None
+
+
+"""
+* ae33661 - (0 seconds ago) 3. added branch1.md - Joan Puigcerver (branch1)
+| * 058a064 - (0 seconds ago) 4. added branch2.md - Joan Puigcerver (branch2)
+|/
+* 8ba96a6 - (0 seconds ago) 2. modified file1.md - Joan Puigcerver (HEAD -> main, tag: T3, tag: T2)
+* 1ebb397 - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
+"""
 
 def testFindCommit_GivenNonExistingCommit_ShouldReturnCommit(repo):
     # Arrange
@@ -20,6 +30,7 @@ def testFindCommit_GivenNonExistingCommit_ShouldReturnCommit(repo):
 
     # Assert
     assert result == None
+
 
 def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
     # Arrange
@@ -35,6 +46,7 @@ def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
     assert len(result.hash) > 0
     assert result.message == "1. added file1.md"
 
+
 def testFindCommit_GivenPatterMessage_ShouldReturnCommit(repo):
     # Arrange
     expected_commit = ExpectedCommit("1")
@@ -49,32 +61,8 @@ def testFindCommit_GivenPatterMessage_ShouldReturnCommit(repo):
     assert len(result.hash) > 0
     assert result.message == "1. added file1.md"
 
-def testFindCommit_GivenWrongParentCommit_ShouldRaiseError(repo):
-    # Arrange
-    expected_commit = ExpectedCommit("2")
-    expected_commit.message = "2."
 
-    # Act
-    with pytest.raises(TypeError):
-        repo.find_commit(expected_commit, parent_commit="1")
-
-
-def testFindCommit_GivenACommitThatIsNotChildOfParent_ShouldReturnNone(repo):
-    # Arrange
-    parent_expected_commit = ExpectedCommit("2")
-    parent_expected_commit.message = "2."
-    parent = repo.find_commit(parent_expected_commit)
-
-    expected_commit = ExpectedCommit("1")
-    expected_commit.message = "1."
-
-    # Act
-    result = repo.find_commit(expected_commit, parent_commit=parent)
-
-    # Assert
-    assert result == None
-
-def testFindCommit_GivenExistingCommitThatIsNotInStartingPointBranch_ShouldReturnNone(repo):
+def testFindCommit_GivenExistingCommitThatIsNotInDefaultBranch_ShouldReturnNone(repo):
     # Arrange
     expected_commit = ExpectedCommit("3")
     expected_commit.message = "3."
@@ -85,11 +73,12 @@ def testFindCommit_GivenExistingCommitThatIsNotInStartingPointBranch_ShouldRetur
     # Assert
     assert result == None
 
-def testFindCommit_GivenExistingCommitThatInSpecificStartingPoint_ShouldReturnCommit(repo):
+
+def testFindCommit_GivenExistingCommitThatInSpecificStart_ShouldReturnCommit(repo):
     # Arrange
     expected_commit = ExpectedCommit("3")
     expected_commit.message = "3."
-    expected_commit.starting_point = "branch1"
+    expected_commit.start = "branch1"
 
     # Act
     result = repo.find_commit(expected_commit)
@@ -97,6 +86,76 @@ def testFindCommit_GivenExistingCommitThatInSpecificStartingPoint_ShouldReturnCo
     # Assert
     assert result.id == "3"
     assert result.message == "3. added branch1.md"
+
+
+def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnNone(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("1")
+    expected_commit.message = "1."
+    expected_commit.end = "T2"
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert result == None
+
+
+def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnCommit(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("2")
+    expected_commit.message = "2."
+    expected_commit.end = "T1"
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert result.id == "2"
+    assert result.message == "2. modified file1.md"
+
+
+def testFindCommit_GivenExistingCommitStartEndReverseOrder_ShouldReturnOlder(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("1")
+    expected_commit.message = ".*file1.md.*"
+    expected_commit.start = "T1"
+    expected_commit.end = "HEAD"
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert result.id == "1"
+    assert result.message == "1. added file1.md"
+
+
+def testFindCommit_GivenExistingCommitStartEnd_ShouldReturnNewer(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("2")
+    expected_commit.message = ".*file1.md.*"
+    expected_commit.start = "HEAD"
+    expected_commit.end = "T1"
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert result.id == "2"
+    assert result.message == "2. modified file1.md"
+
+
+def testFindCommit_GivenUnrelatedStartEnd_ShouldRaiseError(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("2")
+    expected_commit.message = ""
+    expected_commit.start = "branch1"
+    expected_commit.end = "branch2"
+
+    # Act
+    with pytest.raises(ValueError):
+        repo.find_commit(expected_commit)
+
 
 def testFindCommit_GivenCommitWithTag_ShouldReturnCommitWithTags(repo):
     # Arrange
@@ -109,6 +168,7 @@ def testFindCommit_GivenCommitWithTag_ShouldReturnCommitWithTags(repo):
     # Assert
     assert result.tags == ["T1"]
 
+
 def testFindCommit_GivenCommitWithMultipleTags_ShouldReturnCommitWithTags(repo):
     # Arrange
     expected_commit = ExpectedCommit("2")
@@ -120,11 +180,12 @@ def testFindCommit_GivenCommitWithMultipleTags_ShouldReturnCommitWithTags(repo):
     # Assert
     assert result.tags == ["T2", "T3"]
 
+
 def testFindCommit_GivenCommitWithNoTags_ShouldReturnCommitWithNoTags(repo):
     # Arrange
     expected_commit = ExpectedCommit("3")
     expected_commit.message = "3."
-    expected_commit.starting_point = "branch1"
+    expected_commit.start = "branch1"
 
     # Act
     result = repo.find_commit(expected_commit)

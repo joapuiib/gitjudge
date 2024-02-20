@@ -45,6 +45,7 @@ class Repository:
     def print_log(self, start=None, end=None, branches=None, all=False):
         git_log_command = self.log_command(start, end, branches, all)
         subprocess.run(git_log_command, cwd=self.directory_path, shell=True)
+        print("")
 
 
     # Not unit tested, but tested in find_commit
@@ -56,38 +57,75 @@ class Repository:
         return tags
 
 
-    def find_commit(self, expected_commit, parent_commit=None):
+    def find_commit(self, expected_commit):
         """
         Find a commit in the repository that matches the expected commit.
 
-        The search will start from the `starting_point` commit ('HEAD' by default),
+        The search will start from the `start` ref ('HEAD' by default),
         so it will find the most recent commit that matches the expected commit.
 
-        If a parent commit is provided, the search will stop at the parent commit.
+        If `end` is provided, the search will be limited to the commits between `start` and `end`.
+
+        If `start` and `end` are provided, but `start` is an ancestor of `end`, the search will be reversed
+        and the oldest commit that matches the expected commit will be found, limited to the commits between `start` and `end`.
 
         None is returned if:
             - The repository is empty
             - The commit is not found
 
         The commit to be found is considered a match if:
-            - The commit is tagged with the expected tags (if any)
+            - The commit is tagged with the expected tags (if any) (Not implemented yet)
             - The commit message starts with the expected commit message
         """
         if not isinstance(expected_commit, ExpectedCommit):
             raise TypeError("Expected a ExpectedCommit object")
-        if parent_commit is not None and not isinstance(parent_commit, Commit):
-            raise TypeError("Parent commit expected a Commit object")
 
         # If the repository is empty, there are no commits to find
         if not self.repo.active_branch.is_valid():
             return None
 
-        rev = expected_commit.starting_point or "HEAD"
-        if parent_commit is not None:
-            rev = f"{parent_commit.hash}..{rev}"
+        start = expected_commit.start
+        if isinstance(expected_commit.start, Commit):
+            start = start.hash
+        start = self.repo.commit(start or "HEAD")
+
+        end = expected_commit.end
+        if isinstance(expected_commit.end, Commit):
+            end = end.hash
+
+        if end is not None:
+            end = self.repo.commit(end)
+
+        reverse_search = False
+        if end is not None:
+            common_ancestor = self.repo.merge_base(start, end)
+            if common_ancestor:
+                common_ancestor = common_ancestor[0]
+                # start is older than end
+                if common_ancestor.hexsha == start.hexsha:
+                    reverse_search = True
+                    aux = start
+                    start = end
+                    end = aux
+                # start is newer than end
+                elif common_ancestor.hexsha == end.hexsha:
+                    reverse_search = False
+                else:
+                    raise ValueError("Start and end are not related")
+
+        rev = start
+        if end is not None:
+            rev = f"{end}..{start}"
+
+        list_commits = list(self.repo.iter_commits(rev=rev, reverse=reverse_search))
+        if end is not None:
+            if reverse_search:
+                list_commits.insert(0, self.repo.commit(end))
+            else:
+                list_commits.append(self.repo.commit(end))
 
         commit_found = None
-        for commit in self.repo.iter_commits(rev=rev):
+        for commit in list_commits:
             expected_commit_pattern = re.compile("^" + expected_commit.message + ".*", re.IGNORECASE)
             if re.match(expected_commit_pattern, commit.message.strip()):
                 commit_found = commit

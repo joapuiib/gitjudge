@@ -9,16 +9,18 @@ def test_commitConstructorShouldHaveID():
     commit = ExpectedCommit(1)
     assert commit.id == 1
     assert commit.message == None
-    assert commit.starting_point == None
-    assert commit.parents == []
-    assert commit.branches == []
-    assert commit.tags == []
+    assert commit.start == None
+    assert commit.end == None
     assert commit.checks == None
 
 def test_givenSetMessage_shouldSetMessage():
     commit = ExpectedCommit(1, message="message")
     assert commit.message == "message"
 
-def test_givenStartingPoint_shouldSetStartingPoint():
-    commit = ExpectedCommit(1, starting_point="main")
-    assert commit.starting_point == "main"
+def test_givenStart_shouldSetStart():
+    commit = ExpectedCommit(1, start = "main")
+    assert commit.start == "main"
+
+def test_givenEnd_shouldSetEnd():
+    commit = ExpectedCommit(1, end = "main")
+    assert commit.end == "main"

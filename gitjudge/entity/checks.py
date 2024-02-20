@@ -22,7 +22,13 @@ class Checks:
     def __repr__(self):
         return self.__str__()
 
-    def validate(self, commit: Commit, found_commits:dict = {}) -> bool:
+    def resolve_references(self, found_commits: dict = {}):
+        if self.cherry_pick and self.cherry_pick in found_commits:
+            self.cherry_pick = found_commits[self.cherry_pick]
+        if self.reverts and self.reverts in found_commits:
+            self.reverts = found_commits[self.reverts]
+
+    def validate(self, commit: Commit) -> bool:
         check_result = CheckResult(commit)
         if not isinstance(commit, Commit):
             raise TypeError("Checks.validate requires a Commit object")
@@ -33,13 +39,11 @@ class Checks:
                 check_result.add_tag(tag, tag_present)
 
         if self.cherry_pick:
-            referenced_commit = found_commits.get(self.cherry_pick)
-            is_cherry_picked = commit.is_cherry_picked_from(referenced_commit)
-            check_result.set_cherry_picked(referenced_commit, is_cherry_picked)
+            is_cherry_picked = commit.is_cherry_picked_from(self.cherry_pick)
+            check_result.set_cherry_picked(self.cherry_pick, is_cherry_picked)
 
         if self.reverts:
-            referenced_commit = found_commits.get(self.reverts)
-            is_reverted = commit.reverts(referenced_commit)
-            check_result.set_reverted(referenced_commit, is_reverted)
+            is_reverted = commit.reverts(self.reverts)
+            check_result.set_reverted(self.reverts, is_reverted)
 
         return check_result

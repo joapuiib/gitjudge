@@ -6,8 +6,8 @@ def print_expected_commit(expected_commit: ExpectedCommit):
     def print_item(name, value):
         print(f"{name}: {Fore.YELLOW}{value}{Fore.RESET}")
 
-    if expected_commit.starting_point:
-        print_item("Starting point", expected_commit.starting_point)
+    if expected_commit.start:
+        print_item("Starting point", expected_commit.start)
     if expected_commit.message:
         print_item("Message", expected_commit.message)
     if expected_commit.tags:

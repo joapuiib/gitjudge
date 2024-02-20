@@ -10,7 +10,7 @@ Definition(
     expected_commits=[
         ExpectedCommit(id=1, message=1.),
         ExpectedCommit(id=2, message=2.),
-        ExpectedCommit(id=3, message=3., starting_point=branch1)
+        ExpectedCommit(id=3, message=3., start=branch1)
     ]
 )
 """

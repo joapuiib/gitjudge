@@ -12,30 +12,8 @@ def map_expected_commit(id: str, d: dict) -> ExpectedCommit:
         if not expected_commit.message:
             raise ValueError('Expected commit message cannot be empty')
 
-    expected_commit.starting_point = d.get('starting-point')
-
-    # Parent and parents are mutually exclusive
-    if 'parent' in d and 'parents' in d:
-        raise ValueError('Expected commit cannot have both parent and parents')
-
-    parents = d.get('parents', [])
-    parent = d.get('parent')
-    if parent:
-        parents.append(parent)
-    expected_commit.parents = parents
-
-    if len(parents) > 2:
-        raise ValueError('Expected commit cannot have more than 2 parents')
-
-    # Tag and tags are mutually exclusive
-    if 'tag' in d and 'tags' in d:
-        raise ValueError('Expected commit cannot have both tag and tags')
-
-    tags = d.get('tags', [])
-    tag = d.get('tag')
-    if tag:
-        tags.append(tag)
-    expected_commit.tags = tags
+    expected_commit.start = d.get('start')
+    expected_commit.end = d.get('end')
 
     checks = d.get('check', None)
     if checks:

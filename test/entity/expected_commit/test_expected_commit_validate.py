@@ -26,6 +26,6 @@ def test_expectedCommitWithChecks_shouldValidate(mocker):
     commit = mocker.create_autospec(Commit)
     result = expected.validate(commit)
 
-    assert mock_checks.validate.called_with(commit)
+    mock_checks.validate.assert_called_with(commit)
     assert result == expected_result
 

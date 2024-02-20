@@ -1,10 +1,11 @@
 from gitjudge.entity import Commit, CheckResult
 
 class ExpectedCommit:
-    def __init__(self, id: str, message: str = None, starting_point: str = None):
+    def __init__(self, id: str, message: str = None, start: str = None, end: str = None):
         self.id = id
         self.message = message
-        self.starting_point = starting_point
+        self.start = start
+        self.end = end
 
         self.parents = []
         self.branches = []
@@ -29,14 +30,10 @@ class ExpectedCommit:
         args.append(f"id={self.id}")
         if self.message:
             args.append(f"message={self.message}")
-        if self.starting_point:
-            args.append(f"starting_point={self.starting_point}")
-        if self.parents:
-            args.append(f"parents={self.parents}")
-        if self.branches:
-            args.append(f"branches={self.branches}")
-        if self.tags:
-            args.append(f"tags={self.tags}")
+        if self.start:
+            args.append(f"start={self.start}")
+        if self.end:
+            args.append(f"end={self.end}")
         if self.checks:
             args.append(f"checks={self.checks}")
         return f"ExpectedCommit({', '.join(args)})"
@@ -44,15 +41,21 @@ class ExpectedCommit:
     def __repr__(self):
         return self.__str__()
 
-    def validate(self, commit: Commit, found_commits: dict = {}) -> bool:
+    def resolve_references(self, found_commits: dict = {}):
+        if self.start and self.start in found_commits:
+            self.start = found_commits[self.start]
+        if self.end and self.end in found_commits:
+            self.end = found_commits[self.end]
+
+        if self.checks:
+            self.checks.resolve_references(found_commits)
+
+
+    def validate(self, commit: Commit) -> bool:
         if not isinstance(commit, Commit):
             raise TypeError("ExpectedCommit.validate requires a Commit object")
 
-        if not isinstance(found_commits, dict):
-            raise TypeError("ExpectedCommit.validate requires a dict object")
-
         if self.checks:
-            return self.checks.validate(commit, found_commits)
+            return self.checks.validate(commit)
 
         return CheckResult(commit)
-

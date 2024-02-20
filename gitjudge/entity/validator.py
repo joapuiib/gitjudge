@@ -16,6 +16,7 @@ class Validator:
 
     def validate(self):
         for expected_commit in self.definition.expected_commits:
+            expected_commit.resolve_references(self.found_commits)
             # print(expected_commit)
             print(f"{Fore.CYAN}Validating commit {expected_commit.id}{Fore.RESET}")
             commit = self.repo.find_commit(expected_commit)
@@ -26,7 +27,7 @@ class Validator:
                 continue
 
             self.found_commits[expected_commit.id] = commit
-            check_result = expected_commit.validate(commit, self.found_commits)
+            check_result = expected_commit.validate(commit)
             print_commit(commit, check_result)
 
             print()
