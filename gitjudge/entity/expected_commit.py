@@ -1,4 +1,5 @@
 from gitjudge.entity import Commit, CheckResult
+from gitjudge.common.utils import resolve_commit_reference
 
 class ExpectedCommit:
     def __init__(self, id: str, message: str = None, start: str = None, end: str = None):
@@ -42,13 +43,11 @@ class ExpectedCommit:
         return self.__str__()
 
     def resolve_references(self, found_commits: dict = {}):
-        if self.start and self.start in found_commits:
-            self.start = found_commits[self.start]
-        if self.end and self.end in found_commits:
-            self.end = found_commits[self.end]
+        resolve_commit_reference(self, self.id, 'start', found_commits)
+        resolve_commit_reference(self, self.id, 'end', found_commits)
 
         if self.checks:
-            self.checks.resolve_references(found_commits)
+            self.checks.resolve_references(self.id, found_commits)
 
 
     def validate(self, commit: Commit) -> bool:

@@ -2,33 +2,6 @@ import pytest
 
 from gitjudge.entity import Checks, Commit
 
-@pytest.fixture
-def found_commits():
-    return {
-        1: Commit(
-            1,
-            message="Commit 1",
-            tags=["tag1"],
-            diff="+1"
-        ),
-        2: Commit(
-            2,
-            message="Commit 2",
-            tags=["tag2"],
-            diff="+2"
-        ),
-        3: Commit(
-            3,
-            message="Revert \"Commit 2\"",
-            diff="-2"
-        ),
-        4: Commit(
-            4,
-            message="Cherry-pick \"Commit 1\"",
-            diff="+1"
-        ),
-    }
-
 def test_chekcsValidate_WrongParameters_ShouldRaiseError():
     checks = Checks()
     with pytest.raises(TypeError):

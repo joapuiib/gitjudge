@@ -1,4 +1,5 @@
 from gitjudge.entity import Commit, CheckResult
+from gitjudge.common.utils import resolve_commit_reference
 
 class Checks:
     def __init__(self):
@@ -22,11 +23,9 @@ class Checks:
     def __repr__(self):
         return self.__str__()
 
-    def resolve_references(self, found_commits: dict = {}):
-        if self.cherry_pick and self.cherry_pick in found_commits:
-            self.cherry_pick = found_commits[self.cherry_pick]
-        if self.reverts and self.reverts in found_commits:
-            self.reverts = found_commits[self.reverts]
+    def resolve_references(self, id, found_commits: dict = {}):
+        resolve_commit_reference(self, id, 'cherry_pick', found_commits)
+        resolve_commit_reference(self, id, 'reverts', found_commits)
 
     def validate(self, commit: Commit) -> bool:
         check_result = CheckResult(commit)

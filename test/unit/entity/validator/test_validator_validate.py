@@ -22,7 +22,7 @@ def validator(repo, definition):
 def test_validateShouldExist(validator):
     assert hasattr(validator, "validate")
 
-def test_givenWithWrongType_shouldRaiseError(validator):
+def test_givenValidDefinitionForRepo_shouldFindCommits(validator):
     validator.validate()
     assert len(validator.found_commits) == 3
     assert validator.found_commits["1"].message == "1. added file1.md"

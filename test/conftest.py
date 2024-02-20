@@ -2,9 +2,7 @@ import pytest
 import os
 from pathlib import Path
 
-from gitjudge.entity.repository import Repository
-from gitjudge.entity.definition import Definition
-from gitjudge.entity.expected_commit import ExpectedCommit
+from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition
 
 @pytest.fixture()
 def empty_repo(tmp_path):
@@ -65,3 +63,31 @@ def definition():
         ExpectedCommit(id="3", message="3.", start="branch1"),
     ]
     return definition
+
+@pytest.fixture
+def found_commits():
+    return {
+        1: Commit(
+            1,
+            message="Commit 1",
+            tags=["tag1"],
+            diff="+1"
+        ),
+        2: Commit(
+            2,
+            message="Commit 2",
+            tags=["tag2"],
+            diff="+2"
+        ),
+        3: Commit(
+            3,
+            message="Revert \"Commit 2\"",
+            diff="-2"
+        ),
+        4: Commit(
+            4,
+            message="Cherry-pick \"Commit 1\"",
+            diff="+1"
+        ),
+    }
+
