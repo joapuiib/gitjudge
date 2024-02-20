@@ -35,7 +35,6 @@ class Repository:
             git_log_command = git_log_command + " --all"
 
 
-        # print(git_log_command)
         return git_log_command
 
     def log(self, start=None, end=None, branches=None, all=False):

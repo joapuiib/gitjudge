@@ -59,7 +59,7 @@ def test_dictWithExpectedCommits_ShouldCreateDefinition():
     assert definition.expected_commits[0].message == "message"
 
 def test_dictWithLogOptions_ShouldCreateDefinition():
-    d = {"name": "definition", "log_options": {"branches": ["branch1"], "all": True}}
+    d = {"name": "definition", "log": {"branches": ["branch1"], "all": True}}
     definition = map_definition(d)
     assert definition.log_options.branches == ["branch1"]
     assert definition.log_options.all is True

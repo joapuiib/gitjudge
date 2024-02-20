@@ -37,8 +37,8 @@ def map_definition(d: dict) -> Definition:
         expected_commits.append(expected_commit)
     definition.expected_commits = expected_commits
 
-    if d.get("log_options"):
-        definition.log_options = map_log_options(d["log_options"])
+    if d.get("log"):
+        definition.log_options = map_log_options(d["log"])
 
     return definition
 
