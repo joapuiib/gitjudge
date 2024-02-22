@@ -36,11 +36,11 @@ class Checks:
                 check_result.add_tag(tag, tag_present)
 
         if self.cherry_pick:
-            is_cherry_picked = commit.is_cherry_picked_from(self.cherry_pick)
-            check_result.set_cherry_picked(self.cherry_pick, is_cherry_picked)
+            check_result.cherry_pick = self.cherry_pick
+            check_result.is_cherry_picked = commit.is_cherry_picked_from(self.cherry_pick)
 
         if self.reverts:
-            is_reverted = commit.reverts(self.reverts)
-            check_result.set_reverted(self.reverts, is_reverted)
+            check_result.reverts = self.reverts
+            check_result.is_reverted = commit.reverts(self.reverts)
 
         return check_result

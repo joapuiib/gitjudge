@@ -41,25 +41,29 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
         if commit_date > limit_date:
             print(Fore.RED + "COMPTE!! El tag ha segut modificat després de la data d'entrega" + Fore.RESET)
 
-    if check_result.has_checked_cherry_pick():
-        if not check_result.has_found_cherry_pick_commit():
-            print(f"- Cherry-picked from commit {Fore.RED}not found{Fore.RESET}.")
+    if check_result.cherry_pick:
+        if check_result.cherry_pick is Commit.NotFoundCommit:
+            print(f"- Cherry-picked from commit ({check_result.cherry_pick.id}) {Fore.RED}not found{Fore.RESET}.")
+        elif check_result.cherry_pick is Commit.ReferencedItselfCommit:
+            print(f"- Cherry-picked from commit {Fore.RED}can't reference itself{Fore.RESET}.")
         else:
-            cherry_picked = check_result.is_cherry_picked()
+            cherry_picked = check_result.is_cherry_picked
             cherry_pick_result = f"{Fore.GREEN}YES{Fore.RESET}" if cherry_picked else f"{Fore.RED}NO{Fore.RESET}"
-            cherry_pick_id = check_result.cherry_picked_from_commit.id
-            cherry_pick_short_hash = check_result.cherry_picked_from_commit.short_hash()
+            cherry_pick_id = check_result.cherry_pick.id
+            cherry_pick_short_hash = check_result.cherry_pick.short_hash()
             print(f"- Is cherry-picked from {Fore.YELLOW}'({cherry_pick_id}) {cherry_pick_short_hash}'{Fore.RESET}? {cherry_pick_result}")
 
 
-    if check_result.has_checked_revert():
-        if not check_result.has_found_reverted_commit():
-            print(f"- Reverting commit {Fore.RED}not found{Fore.RESET}.")
+    if check_result.reverts:
+        if check_result.reverts is Commit.NotFoundCommit:
+            print(f"- Reverting commit ({check_result.reverts.id}) {Fore.RED}not found{Fore.RESET}.")
+        elif check_result.reverts is Commit.ReferencedItselfCommit:
+            print(f"- Reverting commit {Fore.RED}can't reference itself{Fore.RESET}.")
         else:
-            reverts = check_result.is_reverted()
+            reverts = check_result.is_reverted
             revert_result = f"{Fore.GREEN}YES{Fore.RESET}" if reverts else f"{Fore.RED}NO{Fore.RESET}"
-            revert_id = check_result.reverted_from_commit.id
-            revert_short_hash = check_result.reverted_from_commit.short_hash()
+            revert_id = check_result.reverts.id
+            revert_short_hash = check_result.reverts.short_hash()
             print(f"- Reverts {Fore.YELLOW}'({revert_id}) {revert_short_hash}'{Fore.RESET}? {revert_result}")
 
     for tag, valid in check_result.tags.items():

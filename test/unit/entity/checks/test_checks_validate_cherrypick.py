@@ -33,22 +33,41 @@ def test_checksValidate_NoCherryPickChecks_ShouldReturnNoCherryPick(found_commit
     checks = Checks()
     commit = found_commits[1]
     check_result = checks.validate(commit)
-    assert not check_result.has_checked_cherry_pick()
+    assert check_result.cherry_pick == None
+    assert not check_result.is_cherry_picked
 
 def test_checksValidate_CherryPickChecks_ShouldReturnCherryPick(found_commits):
+    # Commit 4 is a cherry-pick of Commit 1
     checks = Checks()
     checks.cherry_pick = found_commits[1]
     commit = found_commits[4]
     check_result = checks.validate(commit)
-    assert check_result.has_checked_cherry_pick()
-    assert check_result.has_found_cherry_pick_commit()
-    assert check_result.is_cherry_picked()
+    assert check_result.cherry_pick == found_commits[1]
+    assert check_result.is_cherry_picked
 
 def test_checksValidate_CherryPickChecks_ShouldReturnNotCherryPick(found_commits):
+    # Commit 4 is not a cherry-pick of commit 2
     checks = Checks()
     checks.cherry_pick = found_commits[2]
     commit = found_commits[4]
     check_result = checks.validate(commit)
-    assert check_result.has_checked_cherry_pick()
-    assert check_result.has_found_cherry_pick_commit()
-    assert not check_result.is_cherry_picked()
+    assert check_result.cherry_pick == found_commits[2]
+    assert not check_result.is_cherry_picked
+
+def test_checksValidate_CherryPickNotFoundCommit_ShouldReturnNotCherryPick(found_commits):
+    checks = Checks()
+    checks.cherry_pick = Commit.NotFoundCommit
+    commit = found_commits[4]
+    check_result = checks.validate(commit)
+    assert check_result.cherry_pick is Commit.NotFoundCommit
+    assert not check_result.is_cherry_picked
+
+def test_checksValidate_CherryPickReferencedItselfCommit_ShouldReturnNotCherryPick(found_commits):
+    checks = Checks()
+    checks.cherry_pick = Commit.ReferencedItselfCommit
+    commit = found_commits[4]
+    check_result = checks.validate(commit)
+    assert check_result.cherry_pick == Commit.ReferencedItselfCommit
+    assert not check_result.is_cherry_picked
+
+

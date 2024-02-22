@@ -1,6 +1,6 @@
 from .log_options import LogOptions
 from .commit import Commit
-from .checkresult import CheckResult, CherryPickState, RevertState
+from .checkresult import CheckResult
 from .expected_commit import ExpectedCommit
 from .checks import Checks
 from .definition import Definition
