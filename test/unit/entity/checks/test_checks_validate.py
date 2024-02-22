@@ -17,17 +17,17 @@ def test_checksValidate_NoTagChecks_ShouldReturnNoTags(found_commits):
 
 def test_checksValidate_NotSameTagChecks_ShouldReturnNoFoundTag(found_commits):
     checks = Checks()
-    checks.tags = ["tag2"]
+    checks.tags = ["T2"]
     commit = found_commits[1]
     check_result = checks.validate(commit)
-    assert check_result.tags == {"tag2": False}
+    assert check_result.tags == {"T2": False}
 
 def test_checksValidate_SameTagChecks_ShouldReturnFoundTag(found_commits):
     checks = Checks()
-    checks.tags = ["tag1"]
+    checks.tags = ["T1"]
     commit = found_commits[1]
     check_result = checks.validate(commit)
-    assert check_result.tags == {"tag1": True}
+    assert check_result.tags == {"T1": True}
 
 def test_checksValidate_NoCherryPickChecks_ShouldReturnNoCherryPick(found_commits):
     checks = Checks()

@@ -2,7 +2,7 @@ import pytest
 import os
 from pathlib import Path
 
-from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition
+from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition, Validator
 
 @pytest.fixture()
 def empty_repo(tmp_path):
@@ -69,14 +69,14 @@ def found_commits():
     return {
         1: Commit(
             1,
-            message="Commit 1",
-            tags=["tag1"],
+            message="1. added file1.md",
+            tags=["T1"],
             diff="+1"
         ),
         2: Commit(
             2,
-            message="Commit 2",
-            tags=["tag2"],
+            message="2. modified file1.md",
+            tags=["T2", "T3"],
             diff="+2"
         ),
         3: Commit(
@@ -91,3 +91,9 @@ def found_commits():
         ),
     }
 
+
+@pytest.fixture
+def validator(found_commits, definition, repo):
+    validator = Validator(repo, definition)
+    validator.found_commits = found_commits
+    return validator

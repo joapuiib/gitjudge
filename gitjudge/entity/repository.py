@@ -57,6 +57,29 @@ class Repository:
         return tags
 
 
+    def _create_commit(self, commit: git.Commit, id=None):
+        result = Commit(id)
+        result.message = commit.message.strip()
+        result.hash = commit.hexsha
+        result.tags = self.get_tags_for_commit(commit)
+        result.comitted_date = commit.committed_datetime
+
+        show_output = self.repo.git.show(commit.hexsha, color='always')
+        diff_start = show_output.find('@@')
+        result._diff = ""
+        if diff_start != -1:
+            result._diff = show_output[diff_start:]
+
+        return result
+
+
+    def find_commit_by_ref(self, ref):
+        if ref in self.repo.refs:
+            return self._create_commit(self.repo.commit(ref))
+
+        return Commit.NotFoundCommit
+
+
     def find_commit(self, expected_commit):
         """
         Find a commit in the repository that matches the expected commit.
@@ -132,18 +155,6 @@ class Repository:
                 break
 
         if commit_found is not None:
-            result = Commit(expected_commit.id)
-            result.message = commit_found.message.strip()
-            result.hash = commit_found.hexsha
-            result.tags = self.get_tags_for_commit(commit_found)
-            result.comitted_date = commit_found.committed_datetime
-
-            show_output = self.repo.git.show(commit_found.hexsha, color='always')
-            diff_start = show_output.find('@@')
-            self._diff = ""
-            if diff_start != -1:
-                result._diff = show_output[diff_start:]
-
-            return result
+            return self._create_commit(commit_found, expected_commit.id)
 
         return None

@@ -12,7 +12,6 @@ class Commit:
         self.tags = tags
         self.parents = []
 
-
     def short_hash(self):
         return self.hash[:7]
 
@@ -99,3 +98,5 @@ class Commit:
 
         return expected_revert_lines <= commit_diff_lines
 
+Commit.NotFoundCommit = Commit("NOT_FOUND")
+Commit.ReferencedItselfCommit = Commit("REFERENCED_ITSELF")

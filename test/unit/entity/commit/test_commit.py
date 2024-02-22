@@ -26,3 +26,7 @@ def test_commitConstructorWithDiff_shouldHaveDiff():
 def test_commitConstructorWithTags_shouldHaveTags():
     commit = Commit(1, tags=["tag1", "tag2"])
     assert commit.tags == ["tag1", "tag2"]
+
+def test_notFoundCommit_shouldHaveIdNotFound():
+    commit = Commit.NotFoundCommit
+    assert commit.id == "NOT_FOUND"
