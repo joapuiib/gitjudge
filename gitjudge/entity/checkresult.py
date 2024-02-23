@@ -10,8 +10,12 @@ class CheckResult:
 
         self.cherry_pick = None
         self.is_cherry_picked = False
+
         self.reverts = None
         self.is_reverted = False
+
+        self.squashes = None
+        self.is_squashed = False
 
     def __str__(self):
         args = []
@@ -22,6 +26,8 @@ class CheckResult:
             args.append(f"cherry_pick={self.cherry_pick}, is_cherry_picked={self.is_cherry_picked}")
         if self.reverts:
             args.append(f"reverts={self.reverts}, is_reverted={self.is_reverted}")
+        if self.squashes:
+            args.append(f"squashes={self.squashes}, is_squashed={self.is_squashed}")
         return f"CheckResult({', '.join(args)})"
 
     def __repr__(self):
@@ -36,6 +42,8 @@ class CheckResult:
             correct = correct and self.is_cherry_picked
         if self.reverts:
             correct = correct and self.is_reverted
+        if self.squashes:
+            correct = correct and self.is_squashed
         return correct
 
 

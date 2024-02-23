@@ -68,3 +68,13 @@ def testMap_givenDictWithReverts_shouldSetReverts():
     expected_checks_dict = {'reverts': '1'}
     expected_checks = map_checks(expected_checks_dict)
     assert expected_checks.reverts == '1'
+
+def testMap_givenDictWithSquashes_shouldSetSquashes():
+    expected_checks_dict = {'squashes': '1'}
+    expected_checks = map_checks(expected_checks_dict)
+    assert expected_checks.squashes == '1'
+
+def testMap_givenDictWithSquashesList_shouldSetSquashes():
+    expected_checks_dict = {'squashes': ['1', '2']}
+    expected_checks = map_checks(expected_checks_dict)
+    assert expected_checks.squashes == ['1', '2']

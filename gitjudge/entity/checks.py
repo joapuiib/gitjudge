@@ -6,6 +6,7 @@ class Checks:
         self.branches = []
         self.cherry_pick = None
         self.reverts = None
+        self.squashes = None
 
 
     def __str__(self):
@@ -18,6 +19,8 @@ class Checks:
             args.append(f"cherry_pick={self.cherry_pick}")
         if self.reverts:
             args.append(f"reverts={self.reverts}")
+        if self.squashes:
+            args.append(f"squashes={self.squashes}")
         return f"Checks({', '.join(args)})"
 
 
@@ -42,5 +45,9 @@ class Checks:
         if self.reverts:
             check_result.reverts = self.reverts
             check_result.is_reverted = commit.reverts(self.reverts)
+
+        if self.squashes:
+            check_result.squashes = self.squashes
+            check_result.is_squashed = commit.squashes(self.squashes)
 
         return check_result

@@ -4,15 +4,14 @@ from pathlib import Path
 
 from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition, Validator
 
-@pytest.fixture()
-def empty_repo(tmp_path):
-    d = tmp_path / "empty_repository"
-    d.mkdir()
+@pytest.fixture(scope="session")
+def empty_repo(tmpdir_factory):
+    d = tmpdir_factory.mktemp("empty-repository")
     os.system(f"git init {d}")
     return Repository(d)
 
-@pytest.fixture()
-def repo(tmp_path):
+@pytest.fixture(scope="session")
+def repo(tmpdir_factory):
     """
     * ae33661 - (0 seconds ago) 3. added branch1.md - Joan Puigcerver (branch1)
     | * 058a064 - (0 seconds ago) 4. added branch2.md - Joan Puigcerver (branch2)
@@ -20,8 +19,7 @@ def repo(tmp_path):
     * 8ba96a6 - (0 seconds ago) 2. modified file1.md - Joan Puigcerver (HEAD -> main, tag: T3, tag: T2)
     * 1ebb397 - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
     """
-    d = tmp_path / "repository"
-    d.mkdir()
+    d = tmpdir_factory.mktemp("repository")
     os.system(f"git init {d}")
     repo = Repository(d)
 
@@ -35,7 +33,7 @@ def repo(tmp_path):
     with open(repo.directory_path / "file1.md", "a") as f:
         f.write("# Populated repo")
     repo.repo.git.add('--all')
-    repo.repo.git.commit(m="2. modified file1.md")
+    repo.repo.git.commit(m="2. added title to file1.md")
     repo.repo.git.tag("T2")
     repo.repo.git.tag("T3")
 
@@ -50,6 +48,22 @@ def repo(tmp_path):
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="4. added branch2.md")
 
+    repo.repo.git.checkout("main")
+    repo.repo.git.checkout("-b", "squash-branch")
+    with open(repo.directory_path / "file1.md", "a") as f:
+        f.write("- first change to file1.md")
+    repo.repo.git.add('--all')
+    repo.repo.git.commit(m="5. first change to file1.md")
+
+    with open(repo.directory_path / "file1.md", "a") as f:
+        f.write("- second change to file1.md")
+    repo.repo.git.add('--all')
+    repo.repo.git.commit(m="6. second change to file1.md")
+
+    repo.repo.git.checkout("main")
+    repo.repo.git.merge("--squash", "squash-branch")
+    repo.repo.git.commit(m="7. Squashed changes to file1.md")
+    repo.repo.git.tag("Squashed")
 
     repo.repo.git.checkout("main")
     return repo

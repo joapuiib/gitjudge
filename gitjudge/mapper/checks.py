@@ -30,5 +30,6 @@ def map_checks(d: dict) -> Checks:
 
     checks.cherry_pick = d.get('cherry-pick', None) or d.get('cherry-picks', None)
     checks.reverts = d.get('reverts', None)
+    checks.squashes = d.get('squashes', None)
 
     return checks

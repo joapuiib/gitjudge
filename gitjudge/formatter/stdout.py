@@ -56,6 +56,10 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
         if commit_date > limit_date:
             print(Fore.RED + "COMPTE!! El tag ha segut modificat després de la data d'entrega" + Fore.RESET)
 
+    for tag, valid in check_result.tags.items():
+        tag_result = f"{Fore.GREEN}YES{Fore.RESET}" if valid else f"{Fore.RED}NO{Fore.RESET}"
+        print(f"- Has {Fore.YELLOW}'{tag}'{Fore.RESET} tag? {tag_result}")
+
     if check_result.cherry_pick:
         if isinstance(check_result.cherry_pick, NotFoundCommit):
             print(f"- Cherry-picked from commit ({check_result.cherry_pick.id}) {Fore.RED}not found{Fore.RESET}.")
@@ -81,6 +85,8 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
             revert_short_hash = check_result.reverts.short_hash()
             print(f"- Reverts {Fore.YELLOW}'({revert_id}) {revert_short_hash}'{Fore.RESET}? {revert_result}")
 
-    for tag, valid in check_result.tags.items():
-        tag_result = f"{Fore.GREEN}YES{Fore.RESET}" if valid else f"{Fore.RED}NO{Fore.RESET}"
-        print(f"- Has {Fore.YELLOW}'{tag}'{Fore.RESET} tag? {tag_result}")
+    if check_result.squashes:
+        squashes = check_result.is_squashed
+        squash_result = f"{Fore.GREEN}YES{Fore.RESET}" if squashes else f"{Fore.RED}NO{Fore.RESET}"
+        squash_output = ", ".join([f"{commit.short_hash()}" for commit in check_result.squashes])
+        print(f"- Does squash {Fore.YELLOW}'{squash_output}'{Fore.RESET}? {squash_result}")

@@ -115,7 +115,7 @@ def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnCommit(repo):
 
     # Assert
     assert result.id == "2"
-    assert result.message == "2. modified file1.md"
+    assert result.message == "2. added title to file1.md"
 
 
 def testFindCommit_GivenExistingCommitStartEndReverseOrder_ShouldReturnOlder(repo):
@@ -136,16 +136,17 @@ def testFindCommit_GivenExistingCommitStartEndReverseOrder_ShouldReturnOlder(rep
 def testFindCommit_GivenExistingCommitStartEnd_ShouldReturnNewer(repo):
     # Arrange
     expected_commit = ExpectedCommit("2")
-    expected_commit.message = ".*file1.md.*"
+    expected_commit.message = "[12]"
     expected_commit.start = "HEAD"
     expected_commit.end = "T1"
 
     # Act
     result = repo.find_commit(expected_commit)
+    repo.print_log(all=True)
 
     # Assert
     assert result.id == "2"
-    assert result.message == "2. modified file1.md"
+    assert result.message == "2. added title to file1.md"
 
 
 def testFindCommit_GivenUnrelatedStartEnd_ShouldRaiseError(repo):

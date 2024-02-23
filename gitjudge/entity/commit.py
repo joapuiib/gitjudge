@@ -99,6 +99,10 @@ class Commit:
         return expected_revert_lines <= commit_diff_lines
 
 
+    def squashes(self, commits):
+        return False
+
+
 class NotFoundCommit(Commit):
     def __init__(self, id):
         super().__init__(id)

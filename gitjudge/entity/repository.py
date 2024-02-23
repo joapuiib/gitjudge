@@ -80,6 +80,24 @@ class Repository:
         return NotFoundCommit(ref)
 
 
+    def find_commits_in_branch(self, branch, end=None):
+        if end is not None:
+            if isinstance(end, Commit):
+                end = end.hash
+            end = self.repo.commit(end)
+        else:
+            end = self.repo.commit("HEAD")
+
+        common_ancestor = self.repo.merge_base(branch, end)[0]
+
+        commits = []
+        for commit in self.repo.iter_commits(rev=f"{common_ancestor}..{branch}", reverse=True):
+            commits.append(self._create_commit(commit))
+
+        return commits
+
+
+
     def find_commit(self, expected_commit):
         """
         Find a commit in the repository that matches the expected commit.

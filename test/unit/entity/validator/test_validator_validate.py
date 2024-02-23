@@ -26,5 +26,5 @@ def test_givenValidDefinitionForRepo_shouldFindCommits(validator):
     validator.validate()
     assert len(validator.found_commits) == 3
     assert validator.found_commits["1"].message == "1. added file1.md"
-    assert validator.found_commits["2"].message == "2. modified file1.md"
+    assert validator.found_commits["2"].message == "2. added title to file1.md"
     assert validator.found_commits["3"].message == "3. added branch1.md"
