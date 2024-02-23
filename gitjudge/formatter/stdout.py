@@ -7,7 +7,17 @@ def print_expected_commit(expected_commit: ExpectedCommit):
         print(f"{name}: {Fore.YELLOW}{value}{Fore.RESET}")
 
     if expected_commit.start:
-        print_item("Starting point", expected_commit.start)
+        if isinstance(expected_commit.start, NotFoundCommit):
+            print_item(f"Start", f"({expected_commit.start.id}) {Fore.RED}not found{Fore.RESET}")
+        elif isinstance(expected_commit.start, Commit):
+            print_item(f"Start", f"({expected_commit.start.id}) {expected_commit.start.short_hash()}")
+
+    if expected_commit.end:
+        if isinstance(expected_commit.end, NotFoundCommit):
+            print_item(f"End", f"({expected_commit.end.id}) {Fore.RED}not found{Fore.RESET}")
+        elif isinstance(expected_commit.end, Commit):
+            print_item(f"End", f"({expected_commit.end.id}) {expected_commit.end.short_hash()}")
+
     if expected_commit.message:
         print_item("Message", expected_commit.message)
     if expected_commit.tags:
@@ -16,6 +26,11 @@ def print_expected_commit(expected_commit: ExpectedCommit):
         print_item("Branches", expected_commit.branches)
     if expected_commit.parents:
         print_item("Parents", expected_commit.parents)
+
+
+def print_not_found_commit(not_found_commit: NotFoundCommit):
+    print(f"{Fore.RED}Commit {not_found_commit.id} not found{Fore.RESET}")
+
 
 def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = None):
     correct = check_result.is_correct()

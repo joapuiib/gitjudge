@@ -1,6 +1,6 @@
 import pytest
 
-from gitjudge.entity import Commit, ExpectedCommit
+from gitjudge.entity import Commit, ExpectedCommit, NotFoundCommit, ReferencedItselfCommit
 
 def testFindCommit_GivenNonExpectedCommitParameter_ShouldRaiseError(empty_repo):
     with pytest.raises(TypeError):
@@ -29,7 +29,8 @@ def testFindCommit_GivenNonExistingCommit_ShouldReturnCommit(repo):
     result = repo.find_commit(expected_commit)
 
     # Assert
-    assert result == None
+    assert isinstance(result, NotFoundCommit)
+    assert result.id == "0"
 
 
 def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
@@ -71,7 +72,8 @@ def testFindCommit_GivenExistingCommitThatIsNotInDefaultBranch_ShouldReturnNone(
     result = repo.find_commit(expected_commit)
 
     # Assert
-    assert result == None
+    assert isinstance(result, NotFoundCommit)
+    assert result.id == "3"
 
 
 def testFindCommit_GivenExistingCommitThatInSpecificStart_ShouldReturnCommit(repo):
@@ -98,7 +100,8 @@ def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnNone(repo):
     result = repo.find_commit(expected_commit)
 
     # Assert
-    assert result == None
+    assert isinstance(result, NotFoundCommit)
+    assert result.id == "1"
 
 
 def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnCommit(repo):
@@ -193,3 +196,41 @@ def testFindCommit_GivenCommitWithNoTags_ShouldReturnCommitWithNoTags(repo):
     # Assert
     assert result.tags == []
 
+def testFindCommit_GivenCommitWithNotFoundStart_ShouldReturnNotFound(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("1")
+    expected_commit.message = "1."
+    expected_commit.start = NotFoundCommit(0)
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert isinstance(result, NotFoundCommit)
+    assert result.id == "1"
+
+def testFindCommit_GivenCommitWithReferencedItselfStart_ShouldReturnReferencedItself(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("1")
+    expected_commit.message = "1."
+    expected_commit.start = ReferencedItselfCommit(0)
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert isinstance(result, ReferencedItselfCommit)
+    assert result.id == "1"
+
+def testFindCommit_GivenCommitWithNotFoundEnd_ShouldReturnNotFound(repo):
+    # Arrange
+    expected_commit = ExpectedCommit("1")
+    expected_commit.message = "1."
+    expected_commit.end = NotFoundCommit(0)
+
+    # Act
+    result = repo.find_commit(expected_commit)
+
+    # Assert
+    assert isinstance(result, NotFoundCommit)
+    assert result.id == "1"

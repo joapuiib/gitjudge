@@ -3,7 +3,7 @@ import git
 import subprocess
 import re
 
-from gitjudge.entity import Definition, ExpectedCommit, Commit, NotFoundCommit
+from gitjudge.entity import Definition, ExpectedCommit, Commit, NotFoundCommit, ReferencedItselfCommit
 
 class Repository:
     def __init__(self, directory_path):
@@ -75,7 +75,7 @@ class Repository:
 
     def find_commit_by_ref(self, ref):
         if ref in self.repo.refs:
-            return self._create_commit(self.repo.commit(ref))
+            return self._create_commit(self.repo.commit(ref), ref)
 
         return NotFoundCommit(ref)
 
@@ -108,11 +108,23 @@ class Repository:
             return None
 
         start = expected_commit.start
+
+        if isinstance(start, NotFoundCommit):
+            return NotFoundCommit(expected_commit.id)
+        if isinstance(start, ReferencedItselfCommit):
+            return ReferencedItselfCommit(expected_commit.id)
+
         if isinstance(expected_commit.start, Commit):
             start = start.hash
         start = self.repo.commit(start or "HEAD")
 
         end = expected_commit.end
+
+        if isinstance(end, NotFoundCommit):
+            return NotFoundCommit(expected_commit.id)
+        if isinstance(end, ReferencedItselfCommit):
+            return ReferencedItselfCommit(expected_commit.id)
+
         if isinstance(expected_commit.end, Commit):
             end = end.hash
 
@@ -157,4 +169,4 @@ class Repository:
         if commit_found is not None:
             return self._create_commit(commit_found, expected_commit.id)
 
-        return None
+        return NotFoundCommit(expected_commit.id)
