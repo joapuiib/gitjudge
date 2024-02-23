@@ -1,6 +1,6 @@
 import re
 
-from gitjudge.entity import Definition, Repository, Commit
+from gitjudge.entity import Definition, Repository, Commit, NotFoundCommit, ReferencedItselfCommit
 from gitjudge.formatter.stdout import print_commit, print_expected_commit
 
 from colorama import Fore, Style
@@ -52,11 +52,11 @@ class Validator:
         if ref_attr and re.match(r"-?\d+", str(ref_attr)):
             if ref_attr in self.found_commits:
                 if ref_attr == id:
-                    setattr(obj, reference, Commit.ReferencedItselfCommit)
+                    setattr(obj, reference, ReferencedItselfCommit(id))
                 else:
                     setattr(obj, reference, self.found_commits[ref_attr])
             else:
-                setattr(obj, reference, Commit.NotFoundCommit)
+                setattr(obj, reference, NotFoundCommit(id))
                 # raise ValueError(f"{commit_ref.capitalize()} {ref_attr} not found in commits")
         else:
             commit = self.repo.find_commit_by_ref(ref_attr)

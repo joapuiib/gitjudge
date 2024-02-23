@@ -1,6 +1,6 @@
 from colorama import Fore, Style
 
-from gitjudge.entity import Commit, ExpectedCommit, CheckResult
+from gitjudge.entity import Commit, ExpectedCommit, CheckResult, NotFoundCommit, ReferencedItselfCommit
 
 def print_expected_commit(expected_commit: ExpectedCommit):
     def print_item(name, value):
@@ -42,9 +42,9 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
             print(Fore.RED + "COMPTE!! El tag ha segut modificat després de la data d'entrega" + Fore.RESET)
 
     if check_result.cherry_pick:
-        if check_result.cherry_pick is Commit.NotFoundCommit:
+        if isinstance(check_result.cherry_pick, NotFoundCommit):
             print(f"- Cherry-picked from commit ({check_result.cherry_pick.id}) {Fore.RED}not found{Fore.RESET}.")
-        elif check_result.cherry_pick is Commit.ReferencedItselfCommit:
+        elif isinstance(check_result.cherry_pick, ReferencedItselfCommit):
             print(f"- Cherry-picked from commit {Fore.RED}can't reference itself{Fore.RESET}.")
         else:
             cherry_picked = check_result.is_cherry_picked
@@ -55,9 +55,9 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
 
 
     if check_result.reverts:
-        if check_result.reverts is Commit.NotFoundCommit:
+        if isinstance(check_result.reverts, NotFoundCommit):
             print(f"- Reverting commit ({check_result.reverts.id}) {Fore.RED}not found{Fore.RESET}.")
-        elif check_result.reverts is Commit.ReferencedItselfCommit:
+        elif isinstance(check_result.reverts, ReferencedItselfCommit):
             print(f"- Reverting commit {Fore.RED}can't reference itself{Fore.RESET}.")
         else:
             reverts = check_result.is_reverted

@@ -1,6 +1,6 @@
 import pytest
 
-from gitjudge.entity import Validator, Checks, ExpectedCommit, Commit
+from gitjudge.entity import Validator, Checks, ExpectedCommit, Commit, NotFoundCommit, ReferencedItselfCommit
 
 def testResolveReferences_givenNothing_expectNoChange(validator):
     expected = ExpectedCommit("id")
@@ -31,21 +31,21 @@ def testResolveReferences_givenNotFoundStart_expectNotFound(validator):
     expected.start = -1
     validator.resolve_references(expected)
 
-    assert expected.start is Commit.NotFoundCommit
+    assert isinstance(expected.start, NotFoundCommit)
 
 def testResolveReferences_givenNonExistingRef_expectNotFound(validator):
     expected = ExpectedCommit("id")
     expected.start = "inexistent"
     validator.resolve_references(expected)
 
-    assert expected.start is Commit.NotFoundCommit
+    assert isinstance(expected.start, NotFoundCommit)
 
 def testResolveReferences_givenItselfStart_expectReferencedItself(validator):
     expected = ExpectedCommit(1)
     expected.start = 1
     validator.resolve_references(expected)
 
-    assert expected.start is Commit.ReferencedItselfCommit
+    assert isinstance(expected.start, ReferencedItselfCommit)
 
 
 # ======================== Resolve references for expected_commit.end attribute ========================
@@ -68,21 +68,21 @@ def testResolveReferences_givenNotFoundEnd_expectNotFound(validator):
     expected.end = -1
     validator.resolve_references(expected)
 
-    assert expected.end is Commit.NotFoundCommit
+    assert isinstance(expected.end, NotFoundCommit)
 
 def testResolveReferences_givenNonExistingRefEnd_expectNotFound(validator):
     expected = ExpectedCommit("id")
     expected.end = "inexistent"
     validator.resolve_references(expected)
 
-    assert expected.end is Commit.NotFoundCommit
+    assert isinstance(expected.end, NotFoundCommit)
 
 def testResolveReferences_givenItselfEnd_expectReferencedItself(validator):
     expected = ExpectedCommit(1)
     expected.end = 1
     validator.resolve_references(expected)
 
-    assert expected.end is Commit.ReferencedItselfCommit
+    assert isinstance(expected.end, ReferencedItselfCommit)
 
 # ======================== Resolve references for expected_commit.checks.cherry_pick attribute ========================
 def testResolveReferences_givenCherryPickRef_expectCommitWithRef(validator):
@@ -107,7 +107,7 @@ def testResolveReferences_givenCherryPickNotFound_expectNotFound(validator):
     expected.checks.cherry_pick = -1
     validator.resolve_references(expected)
 
-    assert expected.checks.cherry_pick is Commit.NotFoundCommit
+    assert isinstance(expected.checks.cherry_pick, NotFoundCommit)
 
 def testResolveReferences_givenCherryPickNonExistingRef_expectNotFound(validator):
     expected = ExpectedCommit("id")
@@ -115,7 +115,7 @@ def testResolveReferences_givenCherryPickNonExistingRef_expectNotFound(validator
     expected.checks.cherry_pick = "inexistent"
     validator.resolve_references(expected)
 
-    assert expected.checks.cherry_pick is Commit.NotFoundCommit
+    assert isinstance(expected.checks.cherry_pick, NotFoundCommit)
 
 def testResolveReferences_givenCherryPickItself_expectReferencedItself(validator):
     expected = ExpectedCommit(1)
@@ -123,4 +123,4 @@ def testResolveReferences_givenCherryPickItself_expectReferencedItself(validator
     expected.checks.cherry_pick = 1
     validator.resolve_references(expected)
 
-    assert expected.checks.cherry_pick is Commit.ReferencedItselfCommit
+    assert isinstance(expected.checks.cherry_pick, ReferencedItselfCommit)

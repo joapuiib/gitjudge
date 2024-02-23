@@ -1,6 +1,6 @@
 import pytest
 
-from gitjudge.entity import Checks, Commit
+from gitjudge.entity import Checks, Commit, NotFoundCommit, ReferencedItselfCommit
 
 def test_checksValidate_NoRevertChecks_ShouldReturnNoRevert(found_commits):
     checks = Checks()
@@ -30,16 +30,16 @@ def test_checksValidate_RevertChecks_ShouldReturnNotReverts(found_commits):
 
 def test_checksValidate_RevertNotFoundCommit_ShouldReturnNotRevert(found_commits):
     checks = Checks()
-    checks.reverts = Commit.NotFoundCommit
+    checks.reverts = NotFoundCommit(1)
     commit = found_commits[3]
     check_result = checks.validate(commit)
-    assert check_result.reverts is Commit.NotFoundCommit
+    assert isinstance(check_result.reverts, NotFoundCommit)
     assert not check_result.is_reverted
 
 def test_checksValidate_RevertReferencedItselfCommit_ShouldReturnNotRevert(found_commits):
     checks = Checks()
-    checks.reverts = Commit.ReferencedItselfCommit
+    checks.reverts = ReferencedItselfCommit(1)
     commit = found_commits[3]
     check_result = checks.validate(commit)
-    assert check_result.reverts == Commit.ReferencedItselfCommit
+    assert isinstance(check_result.reverts, ReferencedItselfCommit)
     assert not check_result.is_reverted

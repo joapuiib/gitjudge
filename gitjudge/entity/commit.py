@@ -98,5 +98,24 @@ class Commit:
 
         return expected_revert_lines <= commit_diff_lines
 
-Commit.NotFoundCommit = Commit("NOT_FOUND")
-Commit.ReferencedItselfCommit = Commit("REFERENCED_ITSELF")
+
+class NotFoundCommit(Commit):
+    def __init__(self, id):
+        super().__init__(id)
+
+    def __str__(self):
+        return f"NotFoundCommit(id={self.id})"
+
+    def __repr__(self):
+        return self.__str__()
+
+
+class ReferencedItselfCommit(Commit):
+    def __init__(self, id):
+        super().__init__(id)
+
+    def __str__(self):
+        return f"ReferencedItselfCommit(id={self.id})"
+
+    def __repr__(self):
+        return self.__str__()

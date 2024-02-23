@@ -3,7 +3,7 @@ import git
 import subprocess
 import re
 
-from gitjudge.entity import Definition, Commit, ExpectedCommit
+from gitjudge.entity import Definition, ExpectedCommit, Commit, NotFoundCommit
 
 class Repository:
     def __init__(self, directory_path):
@@ -77,7 +77,7 @@ class Repository:
         if ref in self.repo.refs:
             return self._create_commit(self.repo.commit(ref))
 
-        return Commit.NotFoundCommit
+        return NotFoundCommit(ref)
 
 
     def find_commit(self, expected_commit):

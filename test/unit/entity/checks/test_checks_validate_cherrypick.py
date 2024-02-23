@@ -1,6 +1,6 @@
 import pytest
 
-from gitjudge.entity import Checks, Commit
+from gitjudge.entity import Checks, Commit, NotFoundCommit, ReferencedItselfCommit
 
 def test_chekcsValidate_WrongParameters_ShouldRaiseError():
     checks = Checks()
@@ -56,18 +56,18 @@ def test_checksValidate_CherryPickChecks_ShouldReturnNotCherryPick(found_commits
 
 def test_checksValidate_CherryPickNotFoundCommit_ShouldReturnNotCherryPick(found_commits):
     checks = Checks()
-    checks.cherry_pick = Commit.NotFoundCommit
+    checks.cherry_pick = NotFoundCommit(1)
     commit = found_commits[4]
     check_result = checks.validate(commit)
-    assert check_result.cherry_pick is Commit.NotFoundCommit
+    assert isinstance(check_result.cherry_pick, NotFoundCommit)
     assert not check_result.is_cherry_picked
 
 def test_checksValidate_CherryPickReferencedItselfCommit_ShouldReturnNotCherryPick(found_commits):
     checks = Checks()
-    checks.cherry_pick = Commit.ReferencedItselfCommit
+    checks.cherry_pick = ReferencedItselfCommit(1)
     commit = found_commits[4]
     check_result = checks.validate(commit)
-    assert check_result.cherry_pick == Commit.ReferencedItselfCommit
+    assert isinstance(check_result.cherry_pick, ReferencedItselfCommit)
     assert not check_result.is_cherry_picked
 
 
