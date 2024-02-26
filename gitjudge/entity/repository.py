@@ -2,8 +2,6 @@ import os
 import git
 import subprocess
 import re
-from unidiff import PatchSet
-
 
 from gitjudge.entity import Definition, ExpectedCommit, Commit, NotFoundCommit, ReferencedItselfCommit, DiffList
 
