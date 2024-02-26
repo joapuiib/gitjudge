@@ -1,5 +1,5 @@
 import pytest
-from gitjudge.entity import Commit
+from gitjudge.entity import Commit, DiffList, DiffIndex
 
 def test_giventNoCommit_shouldRaiseError():
     commit = Commit(1)
@@ -16,11 +16,35 @@ def test_givenCommitWithEmptyDiff_shouldReturnFalse():
     assert not commit.is_cherry_picked_from(commit2)
 
 def test_givenCommitWithDifferentDiffs_shouldReturnFalse():
-    commit = Commit(1, message="commit", diff="diff")
-    commit2 = Commit(2, message="commit", diff="diff2")
+    commit = Commit(1, message="commit")
+    commit.diff = DiffList({
+        "file1.md": DiffIndex("file1.md", {
+            "additions": {"line1": 1},
+            "deletions": {}
+        })
+    })
+    commit2 = Commit(2, message="commit")
+    commit2.diff = DiffList({
+        "file1.md": DiffIndex("file1.md", {
+            "additions": {"line2": 1},
+            "deletions": {}
+        })
+    })
     assert not commit.is_cherry_picked_from(commit2)
 
 def test_givenCommitWithSameNameAndDiff_shouldReturnTrue():
-    commit = Commit(1, message="commit", diff="diff")
-    commit2 = Commit(2, message="commit", diff="diff")
+    commit = Commit(1, message="commit")
+    commit.diff = DiffList({
+        "file1.md": DiffIndex("file1.md", {
+            "additions": {"line1": 1},
+            "deletions": {}
+        })
+    })
+    commit2 = Commit(2, message="commit")
+    commit2.diff = DiffList({
+        "file1.md": DiffIndex("file1.md", {
+            "additions": {"line1": 1},
+            "deletions": {}
+        })
+    })
     assert commit.is_cherry_picked_from(commit2)

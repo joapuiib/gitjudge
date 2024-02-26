@@ -1,6 +1,6 @@
 import pytest
 
-from gitjudge.entity import Commit, ExpectedCommit, NotFoundCommit, ReferencedItselfCommit
+from gitjudge.entity import Commit, ExpectedCommit, NotFoundCommit, ReferencedItselfCommit, DiffList, DiffIndex
 
 def testFindCommit_GivenNonExpectedCommitParameter_ShouldRaiseError(empty_repo):
     with pytest.raises(TypeError):
@@ -46,6 +46,9 @@ def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
     assert result.id == "1"
     assert len(result.hash) > 0
     assert result.message == "1. added file1.md"
+    assert result.diff == DiffList({
+        "file1.md": DiffIndex("file1.md")
+    })
 
 
 def testFindCommit_GivenPatterMessage_ShouldReturnCommit(repo):
@@ -74,6 +77,7 @@ def testFindCommit_GivenExistingCommitThatIsNotInDefaultBranch_ShouldReturnNone(
     # Assert
     assert isinstance(result, NotFoundCommit)
     assert result.id == "3"
+
 
 
 def testFindCommit_GivenExistingCommitThatInSpecificStart_ShouldReturnCommit(repo):
@@ -113,9 +117,19 @@ def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnCommit(repo):
     # Act
     result = repo.find_commit(expected_commit)
 
+    print(repr(result.diff))
+
+
     # Assert
     assert result.id == "2"
     assert result.message == "2. added title to file1.md"
+    assert result.diff == DiffList({
+        "file1.md": DiffIndex(
+            "file1.md",
+            additions={"# Populated repo": 1},
+            deletions={}
+        )
+    })
 
 
 def testFindCommit_GivenExistingCommitStartEndReverseOrder_ShouldReturnOlder(repo):
@@ -142,7 +156,6 @@ def testFindCommit_GivenExistingCommitStartEnd_ShouldReturnNewer(repo):
 
     # Act
     result = repo.find_commit(expected_commit)
-    repo.print_log(all=True)
 
     # Assert
     assert result.id == "2"

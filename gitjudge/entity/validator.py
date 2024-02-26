@@ -22,6 +22,7 @@ class Validator:
             # print(expected_commit)
             print(f"{Fore.CYAN}Validating commit {expected_commit.id}{Fore.RESET}")
             commit = self.repo.find_commit(expected_commit)
+
             if isinstance(commit, NotFoundCommit):
                 print(f"{Fore.RED}Commit {expected_commit.id} not found in repository{Fore.RESET}")
                 print_expected_commit(expected_commit)

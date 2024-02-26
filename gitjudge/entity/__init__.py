@@ -1,3 +1,5 @@
+from .diffindex import DiffIndex
+from .difflist import DiffList
 from .log_options import LogOptions
 from .commit import Commit, NotFoundCommit, ReferencedItselfCommit
 from .checkresult import CheckResult

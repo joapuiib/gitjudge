@@ -1,5 +1,5 @@
 import pytest
-from gitjudge.entity import Commit
+from gitjudge.entity import Commit, DiffList
 
 def test_givenConstructorWithoutID_shouldRaiseError():
     with pytest.raises(TypeError):
@@ -13,15 +13,11 @@ def test_commitConstructorWithId_shouldHaveDefaultValues():
     assert commit.parents == []
     assert commit.branches == []
     assert commit.tags == []
-    assert commit._diff == ""
+    assert isinstance(commit.diff, DiffList)
 
 def test_commitConstructorWithMessage_shouldHaveMessage():
     commit = Commit(1, "message")
     assert commit.message == "message"
-
-def test_commitConstructorWithDiff_shouldHaveDiff():
-    commit = Commit(1, diff="diff")
-    assert commit._diff == "diff"
 
 def test_commitConstructorWithTags_shouldHaveTags():
     commit = Commit(1, tags=["tag1", "tag2"])

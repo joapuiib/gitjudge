@@ -1,5 +1,7 @@
 pytest
+pytest-cov
 pytest-mock
 pyfakefs
 GitPython
 colorama
+unidiff

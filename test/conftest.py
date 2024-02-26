@@ -2,7 +2,7 @@ import pytest
 import os
 from pathlib import Path
 
-from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition, Validator
+from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition, Validator, DiffList, DiffIndex
 
 @pytest.fixture(scope="session")
 def empty_repo(tmpdir_factory):
@@ -31,7 +31,7 @@ def repo(tmpdir_factory):
     repo.repo.git.branch("-m", "main")
 
     with open(repo.directory_path / "file1.md", "a") as f:
-        f.write("# Populated repo")
+        f.write("# Populated repo\n")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="2. added title to file1.md")
     repo.repo.git.tag("T2")
@@ -51,12 +51,12 @@ def repo(tmpdir_factory):
     repo.repo.git.checkout("main")
     repo.repo.git.checkout("-b", "squash-branch")
     with open(repo.directory_path / "file1.md", "a") as f:
-        f.write("- first change to file1.md")
+        f.write("- first change to file1.md\n")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="5. first change to file1.md")
 
     with open(repo.directory_path / "file1.md", "a") as f:
-        f.write("- second change to file1.md")
+        f.write("- second change to file1.md\n")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="6. second change to file1.md")
 
@@ -85,23 +85,43 @@ def found_commits():
             1,
             message="1. added file1.md",
             tags=["T1"],
-            diff="+1"
+            diff=DiffList({
+                "file1.md": DiffIndex(
+                    "file1.md",
+                    additions={"1": 1}
+                )
+            })
         ),
         2: Commit(
             2,
             message="2. modified file1.md",
             tags=["T2", "T3"],
-            diff="+2"
+            diff=DiffList({
+                "file1.md": DiffIndex(
+                    "file1.md",
+                    additions={"2": 1}
+                )
+            })
         ),
         3: Commit(
             3,
             message="Revert \"Commit 2\"",
-            diff="-2"
+            diff=DiffList({
+                "file1.md": DiffIndex(
+                    "file1.md",
+                    deletions={"2": 1}
+                )
+            })
         ),
         4: Commit(
             4,
             message="Cherry-pick \"Commit 1\"",
-            diff="+1"
+            diff=DiffList({
+                "file1.md": DiffIndex(
+                    "file1.md",
+                    additions={"1": 1}
+                )
+            })
         ),
     }
 

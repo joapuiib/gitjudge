@@ -2,8 +2,10 @@ import os
 import git
 import subprocess
 import re
+from unidiff import PatchSet
 
-from gitjudge.entity import Definition, ExpectedCommit, Commit, NotFoundCommit, ReferencedItselfCommit
+
+from gitjudge.entity import Definition, ExpectedCommit, Commit, NotFoundCommit, ReferencedItselfCommit, DiffList
 
 class Repository:
     def __init__(self, directory_path):
@@ -64,11 +66,10 @@ class Repository:
         result.tags = self.get_tags_for_commit(commit)
         result.comitted_date = commit.committed_datetime
 
-        show_output = self.repo.git.show(commit.hexsha, color='always')
-        diff_start = show_output.find('@@')
-        result._diff = ""
-        if diff_start != -1:
-            result._diff = show_output[diff_start:]
+        show_output = self.repo.git.show(commit.hexsha, color='never')
+
+        result.diff = DiffList()
+        result.diff.from_show_output(show_output)
 
         return result
 
