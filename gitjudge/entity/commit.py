@@ -95,7 +95,25 @@ class Commit:
 
 
     def squashes(self, commits):
-        return False
+        """
+        Check if this commit squashes the given commits.
+
+        There's no way to know for sure if a commit squashes other commits, but we can make
+        an educated guess by merging the diff of the given commits and comparing it to the diff
+        of this commit. If they are the same, then it's very likely that this commit squashes
+        the given commits.
+
+        Args:
+            commits (list): The commits to check if this commit squashes.
+
+        Returns:
+            bool: True if this commit squashes the given commits, False otherwise.
+        """
+        merged_diff = DiffList()
+        for commit in commits:
+            merged_diff.merge(commit.diff)
+
+        return self.diff == merged_diff
 
 
 class NotFoundCommit(Commit):
