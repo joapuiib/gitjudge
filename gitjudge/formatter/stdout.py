@@ -56,6 +56,10 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
         if commit_date > limit_date:
             print(Fore.RED + "COMPTE!! El tag ha segut modificat després de la data d'entrega" + Fore.RESET)
 
+    for branch, valid in check_result.branches.items():
+        branch_result = f"{Fore.GREEN}YES{Fore.RESET}" if valid else f"{Fore.RED}NO{Fore.RESET}"
+        print(f"- Is in {Fore.YELLOW}'{branch}'{Fore.RESET} branch? {branch_result}")
+
     for tag, valid in check_result.tags.items():
         tag_result = f"{Fore.GREEN}YES{Fore.RESET}" if valid else f"{Fore.RED}NO{Fore.RESET}"
         print(f"- Has {Fore.YELLOW}'{tag}'{Fore.RESET} tag? {tag_result}")

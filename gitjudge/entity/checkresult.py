@@ -7,6 +7,7 @@ class CheckResult:
             raise TypeError("CheckResult must be initialized with a Commit object.")
 
         self.tags = {}
+        self.branches = {}
 
         self.cherry_pick = None
         self.is_cherry_picked = False
@@ -20,6 +21,8 @@ class CheckResult:
     def __str__(self):
         args = []
         args.append(f"commit={self.commit}")
+        if self.branches:
+            args.append(f"branches={self.branches}")
         if self.tags:
             args.append(f"tags={self.tags}")
         if self.cherry_pick:
@@ -49,4 +52,8 @@ class CheckResult:
 
     def add_tag(self, tag, present):
         self.tags[tag] = present
+        return self
+
+    def add_branch(self, branch, present):
+        self.branches[branch] = present
         return self

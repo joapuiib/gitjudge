@@ -33,6 +33,11 @@ class Checks:
         if not isinstance(commit, Commit):
             raise TypeError("Checks.validate requires a Commit object")
 
+        if self.branches:
+            for branch in self.branches:
+                branch_present = branch in commit.branches
+                check_result.add_branch(branch, branch_present)
+
         if self.tags:
             for tag in self.tags:
                 tag_present = tag in commit.tags

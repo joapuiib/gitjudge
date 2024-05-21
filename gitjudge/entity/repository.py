@@ -56,12 +56,20 @@ class Repository:
                 tags.append(tag.name)
         return tags
 
+    def get_branches_for_commit(self, commit: git.Commit):
+        branches = []
+        for branch in self.repo.branches + self.repo.remotes.origin.refs:
+            if branch.commit == commit:
+                branches.append(branch.name)
+        return branches
+
 
     def _create_commit(self, commit: git.Commit, id=None):
         result = Commit(id)
         result.message = commit.message.strip()
         result.hash = commit.hexsha
         result.tags = self.get_tags_for_commit(commit)
+        result.branches = self.get_branches_for_commit(commit)
         result.comitted_date = commit.committed_datetime
 
         show_output = self.repo.git.show(commit.hexsha, color='never')
@@ -70,6 +78,10 @@ class Repository:
         result.diff.from_show_output(show_output)
 
         return result
+
+
+    def show(self, ref):
+        print(self.repo.git.show(ref, color='always'))
 
 
     def find_commit_by_ref(self, ref):

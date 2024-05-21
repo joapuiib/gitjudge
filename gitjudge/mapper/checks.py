@@ -5,6 +5,25 @@ def map_checks(d: dict) -> Checks:
         raise TypeError('Expected dict object')
 
     checks = Checks()
+
+    # Branch and branches are mutually exclusive
+    if 'branch' in d and 'branches' in d:
+        raise ValueError('Expected commit cannot have both branch and branches')
+
+
+    branches = d.get('branches', [])
+    if branches is not None and not isinstance(branches, list):
+        branches = [branches]
+
+    branch = d.get('branch', [])
+    if branch is not None and not isinstance(branch, list):
+        branch = [branch]
+
+    if branch:
+        branches += branch
+
+    checks.branches = branches
+
     # Parent and parents are mutually exclusive
     if 'parent' in d and 'parents' in d:
         raise ValueError('Expected commit cannot have both parent and parents')

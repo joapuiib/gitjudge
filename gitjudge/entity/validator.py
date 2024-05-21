@@ -6,7 +6,9 @@ from gitjudge.formatter.stdout import print_commit, print_expected_commit
 from colorama import Fore, Style
 
 class Validator:
-    def __init__(self, repo, definition):
+    def __init__(self, repo, definition, args):
+        self.args = args
+
         if not isinstance(repo, Repository):
             raise ValueError(f"Expected Repository, got {type(repo)}")
         self.repo = repo
@@ -20,7 +22,7 @@ class Validator:
         for expected_commit in self.definition.expected_commits:
             self.resolve_references_expected_commit(expected_commit)
             # print(expected_commit)
-            print(f"{Fore.CYAN}Validating commit {expected_commit.id}{Fore.RESET}")
+            print(f"{Fore.CYAN}# Validating commit {expected_commit.id}{Fore.RESET}")
             commit = self.repo.find_commit(expected_commit)
 
             if isinstance(commit, NotFoundCommit):
@@ -33,6 +35,12 @@ class Validator:
             self.found_commits[expected_commit.id] = commit
             check_result = expected_commit.validate(commit)
             print_commit(commit, check_result)
+
+            if self.args.show:
+                print()
+                self.repo.show(commit.hash)
+                print()
+
 
             print()
 

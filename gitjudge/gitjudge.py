@@ -11,13 +11,14 @@ class GitJudge:
 
     def validate(self, repo_dir):
         repo = Repository(repo_dir)
-        validator = Validator(repo, self.definition)
+        validator = Validator(repo, self.definition, self.args)
         validator.validate()
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("definition_file", help="Path to the definition file.")
     parser.add_argument("dir", nargs="+", help="Git Directory to validate.")
+    parser.add_argument("--show", action="store_true")
     # parser.add_argument("--verbose", action="store_true")
     # parser.add_argument("--remove-color", action="store_true", default=False)
     # parser.add_argument("-g", "--disable-git", action="store_true", default=False)
