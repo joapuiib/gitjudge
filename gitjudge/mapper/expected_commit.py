@@ -14,6 +14,7 @@ def map_expected_commit(id: str, d: dict) -> ExpectedCommit:
 
     expected_commit.start = d.get('start')
     expected_commit.end = d.get('end')
+    expected_commit.show = d.get('show', False)
 
     checks = d.get('check', None)
     if checks:

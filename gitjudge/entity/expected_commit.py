@@ -11,6 +11,7 @@ class ExpectedCommit:
         self.branches = []
         self.tags = []
 
+        self.show = False
         self.checks = None
 
     def set_message(self, message):

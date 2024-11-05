@@ -36,7 +36,7 @@ class Validator:
             check_result = expected_commit.validate(commit)
             print_commit(commit, check_result)
 
-            if self.args.show:
+            if self.args.show or expected_commit.show:
                 print()
                 self.repo.show(commit.hash)
                 print()
