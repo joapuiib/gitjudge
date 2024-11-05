@@ -1,5 +1,6 @@
 import pytest
 from gitjudge.entity import Validator
+from argparse import Namespace
 
 """
 * f11d9bd - (0 seconds ago) 3. added branch1.md - Joan Puigcerver (branch1)
@@ -17,7 +18,7 @@ Definition(
 
 @pytest.fixture
 def validator(repo, definition):
-    return Validator(repo, definition)
+    return Validator(repo, definition, Namespace(show=False))
 
 def test_validateShouldExist(validator):
     assert hasattr(validator, "validate")

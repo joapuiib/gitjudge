@@ -58,7 +58,11 @@ class Repository:
 
     def get_branches_for_commit(self, commit: git.Commit):
         branches = []
-        for branch in self.repo.branches + self.repo.remotes.origin.refs:
+        repo_branches = self.repo.branches
+        if self.repo.remotes:
+            repo_branches += self.repo.remotes.origin.refs
+
+        for branch in repo_branches:
             if branch.commit == commit:
                 branches.append(branch.name)
         return branches

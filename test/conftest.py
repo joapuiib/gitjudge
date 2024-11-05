@@ -1,6 +1,7 @@
 import pytest
 import os
 from pathlib import Path
+from argparse import Namespace
 
 from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition, Validator, DiffList, DiffIndex
 
@@ -128,6 +129,6 @@ def found_commits():
 
 @pytest.fixture
 def validator(found_commits, definition, repo):
-    validator = Validator(repo, definition)
+    validator = Validator(repo, definition, Namespace(show=False))
     validator.found_commits = found_commits
     return validator
