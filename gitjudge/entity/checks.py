@@ -7,6 +7,7 @@ class Checks:
         self.cherry_pick = None
         self.reverts = None
         self.squashes = None
+        self.diff = None
 
 
     def __str__(self):
@@ -21,6 +22,8 @@ class Checks:
             args.append(f"reverts={self.reverts}")
         if self.squashes:
             args.append(f"squashes={self.squashes}")
+        if self.diff:
+            args.append(f"diff={self.diff}")
         return f"Checks({', '.join(args)})"
 
 
@@ -54,5 +57,9 @@ class Checks:
         if self.squashes:
             check_result.squashes = self.squashes
             check_result.is_squashed = commit.squashes(self.squashes)
+
+        if self.diff:
+            check_result.diff = self.diff
+            check_result.is_diff = commit.diff.contains(self.diff)
 
         return check_result

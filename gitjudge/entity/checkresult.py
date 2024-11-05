@@ -18,6 +18,9 @@ class CheckResult:
         self.squashes = None
         self.is_squashed = False
 
+        self.diff = None
+        self.is_diff = False
+
     def __str__(self):
         args = []
         args.append(f"commit={self.commit}")
@@ -41,12 +44,16 @@ class CheckResult:
         # Check if all tags are present
         if self.tags:
             correct = correct and all(self.tags.values())
+        if self.branches:
+            correct = correct and all(self.branches.values())
         if self.cherry_pick:
             correct = correct and self.is_cherry_picked
         if self.reverts:
             correct = correct and self.is_reverted
         if self.squashes:
             correct = correct and self.is_squashed
+        if self.diff:
+            correct = correct and self.is_diff
         return correct
 
 

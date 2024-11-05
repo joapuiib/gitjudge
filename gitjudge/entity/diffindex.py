@@ -52,6 +52,7 @@ class DiffIndex:
 
         If the line is deleted, it is removed from the deletions dict.
         """
+        line = line.strip()
 
         if line in self.deletions:
             delete_time = self.deletions[line]
@@ -71,6 +72,7 @@ class DiffIndex:
 
         If the line is added, it is removed from the additions dict.
         """
+        line = line.strip()
 
         if line in self.additions:
             addition_time = self.additions[line]
@@ -122,3 +124,18 @@ class DiffIndex:
         aux = self.additions
         self.additions = self.deletions
         self.deletions = aux
+
+
+    def contains(self, other):
+        """
+        Return True if this DiffIndex contains the other DiffIndex, False otherwise.
+        """
+        for line, other_times in other.additions.items():
+            if line not in self.additions or self.additions[line] < other_times:
+                return False
+
+        for line, times in other.deletions.items():
+            if line not in self.deletions or self.deletions[line] < times:
+                return False
+
+        return True

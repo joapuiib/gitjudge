@@ -1,4 +1,5 @@
 from gitjudge.entity import Checks
+from gitjudge.entity import DiffList, DiffIndex
 
 def map_checks(d: dict) -> Checks:
     if not isinstance(d, dict):
@@ -50,5 +51,17 @@ def map_checks(d: dict) -> Checks:
     checks.cherry_pick = d.get('cherry-pick', None) or d.get('cherry-picks', None)
     checks.reverts = d.get('reverts', None)
     checks.squashes = d.get('squashes', None)
+
+    config_diff = d.get('diff', None)
+    if config_diff:
+        checks.diff = DiffList()
+        for file, text in config_diff.items():
+            diffindex = DiffIndex(file)
+            for line in text.split('\n'):
+                if line.startswith('+'):
+                    diffindex.add_addition(line[1:])
+                elif line.startswith('-'):
+                    diffindex.add_deletion(line[1:])
+            checks.diff.add(diffindex)
 
     return checks

@@ -19,14 +19,18 @@ class DiffList:
         return str(self)
 
 
-    def add(self, diffindex):
-        self.diffs[diffindex.file_path] = diffindex
-
-
     def __eq__(self, other):
         if not isinstance(other, DiffList):
             return False
         return self.diffs == other.diffs
+
+
+    def add(self, diffindex):
+        self.diffs[diffindex.file_path] = diffindex
+
+
+    def items(self):
+        return self.diffs.items()
 
 
     def empty(self):
@@ -104,3 +108,12 @@ class DiffList:
         for diff in new.diffs.values():
             diff.invert()
         return new
+
+
+    def contains(self, other):
+        for other_file_path, other_diff in other.diffs.items():
+            if other_file_path not in self.diffs:
+                return False
+            if not self.diffs[other_file_path].contains(other_diff):
+                return False
+        return True

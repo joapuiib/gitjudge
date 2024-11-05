@@ -94,3 +94,28 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
         squash_result = f"{Fore.GREEN}YES{Fore.RESET}" if squashes else f"{Fore.RED}NO{Fore.RESET}"
         squash_output = ", ".join([f"{commit.short_hash()}" for commit in check_result.squashes])
         print(f"- Does squash {Fore.YELLOW}'{squash_output}'{Fore.RESET}? {squash_result}")
+
+    if check_result.diff:
+        diff_correct = check_result.is_diff
+        diff_result = f"{Fore.GREEN}YES{Fore.RESET}" if diff_correct else f"{Fore.RED}NO{Fore.RESET}"
+        print(f"- Is diff correct? {diff_result}")
+        if not diff_correct:
+            print(f"    {Fore.YELLOW}Expected diff:{Fore.RESET}")
+            for file, diff_index in check_result.diff.items():
+                print(f"    {Fore.CYAN}- {file}{Fore.RESET}")
+                if diff_index.additions:
+                    for line, count in diff_index.additions.items():
+                        print(f"      {count}+: {line}")
+                if diff_index.deletions:
+                    for line, count in diff_index.deletions.items():
+                        print(f"      {count}-: {line}")
+
+            print(f"    {Fore.YELLOW}Actual diff:{Fore.RESET}")
+            for file, diff_index in commit.diff.items():
+                print(f"    {Fore.CYAN}- {file}{Fore.RESET}")
+                if diff_index.additions:
+                    for line, count in diff_index.additions.items():
+                        print(f"      {count}+: {line}")
+                if diff_index.deletions:
+                    for line, count in diff_index.deletions.items():
+                        print(f"      {count}-: {line}")
