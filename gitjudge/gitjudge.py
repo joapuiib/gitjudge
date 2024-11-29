@@ -3,12 +3,13 @@ import argparse
 
 from gitjudge.mapper.definition import load_definition
 from gitjudge.entity import Repository, Validator
+from gitjudge.formatter import StdoutFormatter
 
 class GitJudge:
     def __init__(self, args):
         self.args = args
         self.definition = load_definition(args.definition_file)
-        self.formatter = None
+        self.formatter = StdoutFormatter()
 
     def validate(self, repo_dir):
         repo = Repository(repo_dir)

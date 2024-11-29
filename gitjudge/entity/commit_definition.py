@@ -11,6 +11,8 @@ class CommitDefinition:
         self.show = False
         self.checks = []
 
+        self.is_correct = False
+
 
     def set_message(self, message):
         self.message = message
@@ -59,5 +61,7 @@ class CommitDefinition:
 
 
     def validate(self, commit, repo):
+        self.is_correct = True
         for check in self.checks:
-            check.validate(commit, repo)
+            check_correct = check.validate(commit, repo)
+            self.is_correct = self.is_correct and check_correct

@@ -1,3 +1,5 @@
+from gitjudge.entity import Commit
+
 class Check:
     def __init__(self):
         self.checked = False
@@ -16,7 +18,10 @@ class Check:
         pass
 
 
-    def validate(self, commit, repo) -> bool:
+    def validate(self, commit: Commit, repo) -> bool:
+        if not isinstance(commit, Commit):
+            raise TypeError("Checks.validate requires a Commit object")
+
         self.checked = True
         self.correct = True
         return self.correct

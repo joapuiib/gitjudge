@@ -1,5 +1,4 @@
 from gitjudge.entity.checks import *
-from gitjudge.entity import DiffList, DiffIndex
 from gitjudge.entity.checks import TagCheck
 
 def map_tag_check(d: dict) -> list:

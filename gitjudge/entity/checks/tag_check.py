@@ -17,13 +17,11 @@ class TagCheck(Check):
 
 
     def validate(self, commit, repo) -> bool:
-        if not isinstance(commit, Commit):
-            raise TypeError("Checks.validate requires a Commit object")
+        super().validate(commit, repo)
 
-        correct = True
         for tag in self.tags.keys():
             tag_present = tag in commit.tags
             self.tags[tag] = tag_present
-            correct = correct and tag_present
+            self.correct = self.correct and tag_present
 
-        return correct
+        return self.correct

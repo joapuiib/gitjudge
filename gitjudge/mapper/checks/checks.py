@@ -1,6 +1,11 @@
-from gitjudge.entity.checks import *
 from gitjudge.entity import DiffList, DiffIndex
+from gitjudge.entity.checks import Check
 
+from gitjudge.mapper.checks.branch_check import map_branch_check
+from gitjudge.mapper.checks.cherry_pick_check import map_cherry_pick_check
+from gitjudge.mapper.checks.diff_check import map_diff_check
+from gitjudge.mapper.checks.reverts_check import map_reverts_check
+from gitjudge.mapper.checks.squash_check import map_squash_check
 from gitjudge.mapper.checks.tag_check import map_tag_check
 
 def map_checks(d: dict) -> []:
@@ -9,87 +14,11 @@ def map_checks(d: dict) -> []:
 
     checks = []
 
-    tag_checks = map_tag_check(d)
-    if tag_checks:
-        checks = checks + tag_checks
-
-    return checks
-
-def map_checks_old(d: dict) -> Check:
-    if not isinstance(d, dict):
-        raise TypeError('Expected dict object')
-
-    checks = []
-
-    # Branch and branches are mutually exclusive
-    if 'branch' in d and 'branches' in d:
-        raise ValueError('Expected commit cannot have both branch and branches')
-
-
-    branches = d.get('branches', [])
-    if branches is not None and not isinstance(branches, list):
-        branches = [branches]
-
-    branch = d.get('branch', [])
-    if branch is not None and not isinstance(branch, list):
-        branch = [branch]
-
-    if branch:
-        branches += branch
-
-    # checks.add(BranchCheck(branches))
-
-    # Parent and parents are mutually exclusive
-    if 'parent' in d and 'parents' in d:
-        raise ValueError('Expected commit cannot have both parent and parents')
-
-    parents = d.get('parents', [])
-    parent = d.get('parent')
-    if parent:
-        parents.append(parent)
-    # checks.add(ParentCheck(parents))
-
-    if len(parents) > 2:
-        raise ValueError('Expected commit cannot have more than 2 parents')
-
-    # Tag and tags are mutually exclusive
-    if 'tag' in d and 'tags' in d:
-        raise ValueError('Expected commit cannot have both tag and tags')
-
-    tags = d.get('tags', [])
-    tag = d.get('tag')
-    if tag:
-        tags.append(tag)
-    checks.add(TagCheck(tags))
-
-    cherry_pick = d.get('cherry-pick', None) or d.get('cherry-picks', None)
-    if cherry_pick:
-        # checks.add(CherryPickCheck(cherry_pick))
-        pass
-
-    checks.reverts = d.get('reverts', None)
-    if checks.reverts:
-        # checks.add(RevertCheck(checks.reverts))
-        pass
-    checks.squashes = d.get('squashes', None)
-    if checks.squashes:
-        # checks.add(SquashCheck(checks.squashes))
-        pass
-
-    """
-    config_diff = d.get('diff', None)
-    if config_diff:
-        checks.diff = DiffList()
-        for file, text in config_diff.items():
-            diffindex = DiffIndex(file)
-            for line in text.split('\n'):
-                if line.startswith('+'):
-                    diffindex.add_addition(line[1:])
-                elif line.startswith('-'):
-                    diffindex.add_deletion(line[1:])
-            checks.diff.add(diffindex)
-
-    checks.file_content = d.get('file-content', None)
-    """
+    checks = checks + map_branch_check(d)
+    checks = checks + map_cherry_pick_check(d)
+    checks = checks + map_diff_check(d)
+    checks = checks + map_reverts_check(d)
+    checks = checks + map_squash_check(d)
+    checks = checks + map_tag_check(d)
 
     return checks
