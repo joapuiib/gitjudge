@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 
 from gitjudge.mapper.definition import map_definition
-from gitjudge.entity import Definition, ExpectedCommit
+from gitjudge.entity import Definition, CommitDefinition
 
 def test_dictWithoutName_ShouldRaiseError():
     with pytest.raises(TypeError):
@@ -36,27 +36,27 @@ def test_dictLimitDateWithSeconds_ShouldCreateDefinition():
     assert isinstance(definition.limit_date, datetime)
     assert definition.limit_date == datetime(2019, 1, 1, 12, 0, 0)
 
-def test_dictNoExpectedCommits_ShouldBeEmptyList():
+def test_dictNoCommitDefinitions_ShouldBeEmptyList():
     d = {"name": "definition"}
     definition = map_definition(d)
-    assert isinstance(definition.expected_commits, list)
-    assert len(definition.expected_commits) == 0
+    assert isinstance(definition.commit_definitions, list)
+    assert len(definition.commit_definitions) == 0
 
-def test_dictEmptyExpectedCommits_ShouldBeEmptyList():
+def test_dictEmptyCommitDefinitions_ShouldBeEmptyList():
     d = {"name": "definition", "commits": {}}
     definition = map_definition(d)
-    assert isinstance(definition.expected_commits, list)
-    assert len(definition.expected_commits) == 0
+    assert isinstance(definition.commit_definitions, list)
+    assert len(definition.commit_definitions) == 0
 
-def test_dictWithExpectedCommits_ShouldCreateDefinition():
-    expected_commit = {"message": "message"}
-    d = {"name": "definition", "commits": {"1": expected_commit}}
+def test_dictWithCommitDefinitions_ShouldCreateDefinition():
+    commit_definition = {"message": "message"}
+    d = {"name": "definition", "commits": {"1": commit_definition}}
 
     definition = map_definition(d)
-    assert len(definition.expected_commits) == 1
-    assert isinstance(definition.expected_commits[0], ExpectedCommit)
-    assert definition.expected_commits[0].id == "1"
-    assert definition.expected_commits[0].message == "message"
+    assert len(definition.commit_definitions) == 1
+    assert isinstance(definition.commit_definitions[0], CommitDefinition)
+    assert definition.commit_definitions[0].id == "1"
+    assert definition.commit_definitions[0].message == "message"
 
 def test_dictWithLogOptions_ShouldCreateDefinition():
     d = {"name": "definition", "log": {"branches": ["branch1"], "all": True}}

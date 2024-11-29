@@ -8,10 +8,11 @@ class GitJudge:
     def __init__(self, args):
         self.args = args
         self.definition = load_definition(args.definition_file)
+        self.formatter = None
 
     def validate(self, repo_dir):
         repo = Repository(repo_dir)
-        validator = Validator(repo, self.definition, self.args)
+        validator = Validator(self.args, self.definition, self.formatter, repo)
         validator.validate()
 
 def main():

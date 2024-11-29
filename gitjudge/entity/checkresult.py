@@ -21,6 +21,9 @@ class CheckResult:
         self.diff = None
         self.is_diff = False
 
+        self.file_content = None
+        self.is_file_content = False
+
     def __str__(self):
         args = []
         args.append(f"commit={self.commit}")
@@ -54,6 +57,8 @@ class CheckResult:
             correct = correct and self.is_squashed
         if self.diff:
             correct = correct and self.is_diff
+        if self.file_content:
+            correct = correct and self.is_file_content
         return correct
 
 

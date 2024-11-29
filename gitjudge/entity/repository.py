@@ -3,7 +3,7 @@ import git
 import subprocess
 import re
 
-from gitjudge.entity import Definition, ExpectedCommit, Commit, NotFoundCommit, ReferencedItselfCommit, DiffList
+from gitjudge.entity import Definition, Commit, CommitDefinition, NotFoundCommit, ReferencedItselfCommit, DiffList
 
 class Repository:
     def __init__(self, directory_path):
@@ -113,7 +113,7 @@ class Repository:
 
 
 
-    def find_commit(self, expected_commit):
+    def find_commit(self, commit_definition):
         """
         Find a commit in the repository that matches the expected commit.
 
@@ -133,32 +133,35 @@ class Repository:
             - The commit is tagged with the expected tags (if any) (Not implemented yet)
             - The commit message starts with the expected commit message
         """
-        if not isinstance(expected_commit, ExpectedCommit):
-            raise TypeError("Expected a ExpectedCommit object")
+        if not isinstance(commit_definition, CommitDefinition):
+            raise TypeError("Expected a CommitDefinition object")
 
         # If the repository is empty, there are no commits to find
         if not self.repo.active_branch.is_valid():
             return None
 
-        start = expected_commit.start
+        start = commit_definition.start
 
         if isinstance(start, NotFoundCommit):
-            return NotFoundCommit(expected_commit.id)
+            return NotFoundCommit(commit_definition.id)
         if isinstance(start, ReferencedItselfCommit):
-            return ReferencedItselfCommit(expected_commit.id)
+            return ReferencedItselfCommit(commit_definition.id)
 
-        if isinstance(expected_commit.start, Commit):
+        if isinstance(commit_definition.start, Commit):
             start = start.hash
         start = self.repo.commit(start or "HEAD")
 
-        end = expected_commit.end
+        if start and not commit_definition.message:
+            return self._create_commit(start, commit_definition.id)
+
+        end = commit_definition.end
 
         if isinstance(end, NotFoundCommit):
-            return NotFoundCommit(expected_commit.id)
+            return NotFoundCommit(commit_definition.id)
         if isinstance(end, ReferencedItselfCommit):
-            return ReferencedItselfCommit(expected_commit.id)
+            return ReferencedItselfCommit(commit_definition.id)
 
-        if isinstance(expected_commit.end, Commit):
+        if isinstance(commit_definition.end, Commit):
             end = end.hash
 
         if end is not None:
@@ -194,12 +197,12 @@ class Repository:
 
         commit_found = None
         for commit in list_commits:
-            expected_commit_pattern = re.compile("^" + expected_commit.message + ".*", re.IGNORECASE)
-            if re.match(expected_commit_pattern, commit.message.strip()):
+            commit_definition_pattern = re.compile("^" + commit_definition.message + ".*", re.IGNORECASE)
+            if re.match(commit_definition_pattern, commit.message.strip()):
                 commit_found = commit
                 break
 
         if commit_found is not None:
-            return self._create_commit(commit_found, expected_commit.id)
+            return self._create_commit(commit_found, commit_definition.id)
 
-        return NotFoundCommit(expected_commit.id)
+        return NotFoundCommit(commit_definition.id)

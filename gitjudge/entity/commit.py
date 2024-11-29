@@ -116,6 +116,11 @@ class Commit:
         return self.diff == merged_diff
 
 
+    def get_file_content(self, file):
+        with open(file, "r") as f:
+            return f.read()
+
+
 class NotFoundCommit(Commit):
     def __init__(self, id):
         super().__init__(id)

@@ -10,8 +10,10 @@ def test_givenWithWrongType_shouldRaiseError():
         Validator("wrong_type")
 
 def test_givenRepoAndDefinition_shouldCreateValidator(repo, definition):
-    validator = Validator(repo, definition, {})
+    args = {}
+    formatter = None
+    validator = Validator({}, definition, repo, formatter)
     assert validator.repo == repo
     assert validator.definition == definition
     assert validator.args == {}
-    assert validator.found_commits == {}
+    assert validator.formatter == formatter

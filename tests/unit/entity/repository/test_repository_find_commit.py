@@ -1,14 +1,14 @@
 import pytest
 
-from gitjudge.entity import Commit, ExpectedCommit, NotFoundCommit, ReferencedItselfCommit, DiffList, DiffIndex
+from gitjudge.entity import Commit, CommitDefinition, NotFoundCommit, ReferencedItselfCommit, DiffList, DiffIndex
 
-def testFindCommit_GivenNonExpectedCommitParameter_ShouldRaiseError(empty_repo):
+def testFindCommit_GivenNonCommitDefinitionParameter_ShouldRaiseError(empty_repo):
     with pytest.raises(TypeError):
         empty_repo.find_commit(1)
 
 
 def testFindCommit_GivenEmptyRepo_ShouldReturnNone(empty_repo):
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     assert empty_repo.find_commit(expected_commit) == None
 
 
@@ -22,7 +22,7 @@ def testFindCommit_GivenEmptyRepo_ShouldReturnNone(empty_repo):
 
 def testFindCommit_GivenNonExistingCommit_ShouldReturnCommit(repo):
     # Arrange
-    expected_commit = ExpectedCommit("0")
+    expected_commit = CommitDefinition("0")
     expected_commit.message = "0."
 
     # Act
@@ -35,7 +35,7 @@ def testFindCommit_GivenNonExistingCommit_ShouldReturnCommit(repo):
 
 def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = "1."
 
     # Act
@@ -53,7 +53,7 @@ def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
 
 def testFindCommit_GivenPatterMessage_ShouldReturnCommit(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = "1.[ ]*added"
 
     # Act
@@ -68,7 +68,7 @@ def testFindCommit_GivenPatterMessage_ShouldReturnCommit(repo):
 
 def testFindCommit_GivenExistingCommitThatIsNotInDefaultBranch_ShouldReturnNone(repo):
     # Arrange
-    expected_commit = ExpectedCommit("3")
+    expected_commit = CommitDefinition("3")
     expected_commit.message = "3."
 
     # Act
@@ -82,7 +82,7 @@ def testFindCommit_GivenExistingCommitThatIsNotInDefaultBranch_ShouldReturnNone(
 
 def testFindCommit_GivenExistingCommitThatInSpecificStart_ShouldReturnCommit(repo):
     # Arrange
-    expected_commit = ExpectedCommit("3")
+    expected_commit = CommitDefinition("3")
     expected_commit.message = "3."
     expected_commit.start = "branch1"
 
@@ -96,7 +96,7 @@ def testFindCommit_GivenExistingCommitThatInSpecificStart_ShouldReturnCommit(rep
 
 def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnNone(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = "1."
     expected_commit.end = "T2"
 
@@ -110,7 +110,7 @@ def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnNone(repo):
 
 def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnCommit(repo):
     # Arrange
-    expected_commit = ExpectedCommit("2")
+    expected_commit = CommitDefinition("2")
     expected_commit.message = "2."
     expected_commit.end = "T1"
 
@@ -134,7 +134,7 @@ def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnCommit(repo):
 
 def testFindCommit_GivenExistingCommitStartEndReverseOrder_ShouldReturnOlder(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = ".*file1.md.*"
     expected_commit.start = "T1"
     expected_commit.end = "HEAD"
@@ -149,7 +149,7 @@ def testFindCommit_GivenExistingCommitStartEndReverseOrder_ShouldReturnOlder(rep
 
 def testFindCommit_GivenExistingCommitStartEnd_ShouldReturnNewer(repo):
     # Arrange
-    expected_commit = ExpectedCommit("2")
+    expected_commit = CommitDefinition("2")
     expected_commit.message = "[12]"
     expected_commit.start = "HEAD"
     expected_commit.end = "T1"
@@ -164,8 +164,8 @@ def testFindCommit_GivenExistingCommitStartEnd_ShouldReturnNewer(repo):
 
 def testFindCommit_GivenUnrelatedStartEnd_ShouldRaiseError(repo):
     # Arrange
-    expected_commit = ExpectedCommit("2")
-    expected_commit.message = ""
+    expected_commit = CommitDefinition("2")
+    expected_commit.message = "2."
     expected_commit.start = "branch1"
     expected_commit.end = "branch2"
 
@@ -176,7 +176,7 @@ def testFindCommit_GivenUnrelatedStartEnd_ShouldRaiseError(repo):
 
 def testFindCommit_GivenCommitWithTag_ShouldReturnCommitWithTags(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = "1."
 
     # Act
@@ -188,7 +188,7 @@ def testFindCommit_GivenCommitWithTag_ShouldReturnCommitWithTags(repo):
 
 def testFindCommit_GivenCommitWithMultipleTags_ShouldReturnCommitWithTags(repo):
     # Arrange
-    expected_commit = ExpectedCommit("2")
+    expected_commit = CommitDefinition("2")
     expected_commit.message = "2."
 
     # Act
@@ -200,7 +200,7 @@ def testFindCommit_GivenCommitWithMultipleTags_ShouldReturnCommitWithTags(repo):
 
 def testFindCommit_GivenCommitWithNoTags_ShouldReturnCommitWithNoTags(repo):
     # Arrange
-    expected_commit = ExpectedCommit("3")
+    expected_commit = CommitDefinition("3")
     expected_commit.message = "3."
     expected_commit.start = "branch1"
 
@@ -212,7 +212,7 @@ def testFindCommit_GivenCommitWithNoTags_ShouldReturnCommitWithNoTags(repo):
 
 def testFindCommit_GivenCommitWithNotFoundStart_ShouldReturnNotFound(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = "1."
     expected_commit.start = NotFoundCommit(0)
 
@@ -225,7 +225,7 @@ def testFindCommit_GivenCommitWithNotFoundStart_ShouldReturnNotFound(repo):
 
 def testFindCommit_GivenCommitWithReferencedItselfStart_ShouldReturnReferencedItself(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = "1."
     expected_commit.start = ReferencedItselfCommit(0)
 
@@ -238,7 +238,7 @@ def testFindCommit_GivenCommitWithReferencedItselfStart_ShouldReturnReferencedIt
 
 def testFindCommit_GivenCommitWithNotFoundEnd_ShouldReturnNotFound(repo):
     # Arrange
-    expected_commit = ExpectedCommit("1")
+    expected_commit = CommitDefinition("1")
     expected_commit.message = "1."
     expected_commit.end = NotFoundCommit(0)
 

@@ -1,30 +1,32 @@
-from gitjudge.entity import Commit, CheckResult
-
-class ExpectedCommit:
+class CommitDefinition:
     def __init__(self, id: str, message: str = None, start: str = None, end: str = None):
         self.id = id
         self.message = message
         self.start = start
         self.end = end
 
-        self.parents = []
         self.branches = []
         self.tags = []
 
         self.show = False
-        self.checks = None
+        self.checks = []
+
 
     def set_message(self, message):
         self.message = message
 
+
     def add_branch(self, branch):
         self.branches.append(branch)
+
 
     def add_tag(self, tag):
         self.tags.append(tag)
 
-    def add_parent(self, parent):
-        self.parents.append(parent)
+
+    def add_check(self, check):
+        self.checks.append(check)
+
 
     def __str__(self):
         args = []
@@ -37,16 +39,25 @@ class ExpectedCommit:
             args.append(f"end={self.end}")
         if self.checks:
             args.append(f"checks={self.checks}")
-        return f"ExpectedCommit({', '.join(args)})"
+        return f"CommitDefinition({', '.join(args)})"
+
 
     def __repr__(self):
         return self.__str__()
 
-    def validate(self, commit: Commit) -> bool:
-        if not isinstance(commit, Commit):
-            raise TypeError("ExpectedCommit.validate requires a Commit object")
 
-        if self.checks:
-            return self.checks.validate(commit)
+    def resolve_references(self, resolver):
+        if self.start:
+            self.start = resolver.resolve_reference(self.start)
+            self.start.id = self.id
+        if self.end:
+            self.end = resolver.resolve_reference(self.end)
+            self.end.id = self.id
 
-        return CheckResult(commit)
+        for check in self.checks:
+            check.resolve_references(resolver)
+
+
+    def validate(self, commit, repo):
+        for check in self.checks:
+            check.validate(commit, repo)

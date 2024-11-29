@@ -2,8 +2,7 @@ from datetime import datetime
 import yaml
 
 from gitjudge.entity import Definition
-from gitjudge.entity import ExpectedCommit
-from gitjudge.mapper import map_expected_commit
+from gitjudge.mapper import map_commit_definition
 from gitjudge.mapper import map_log_options
 
 def parse_date(date_str):
@@ -31,11 +30,11 @@ def map_definition(d: dict) -> Definition:
             raise TypeError("limit_date is not a valid date")
     definition.limit_date = limit_date
 
-    expected_commits = []
+    commit_definitions = []
     for id_commit, commit in d.get("commits", {}).items():
-        expected_commit = map_expected_commit(id_commit, commit)
-        expected_commits.append(expected_commit)
-    definition.expected_commits = expected_commits
+        commit_definition = map_commit_definition(id_commit, commit)
+        commit_definitions.append(commit_definition)
+    definition.commit_definitions = commit_definitions
 
     if d.get("log"):
         definition.log_options = map_log_options(d["log"])

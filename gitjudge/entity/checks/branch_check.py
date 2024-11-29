@@ -8,6 +8,7 @@ class Checks:
         self.reverts = None
         self.squashes = None
         self.diff = None
+        self.file_content = None
 
 
     def __str__(self):
@@ -24,6 +25,8 @@ class Checks:
             args.append(f"squashes={self.squashes}")
         if self.diff:
             args.append(f"diff={self.diff}")
+        if self.file_content:
+            args.append(f"file_content={self.file_content}")
         return f"Checks({', '.join(args)})"
 
 
@@ -61,5 +64,9 @@ class Checks:
         if self.diff:
             check_result.diff = self.diff
             check_result.is_diff = commit.diff.contains(self.diff)
+
+        if self.file_content:
+            check_result.file_content = self.file_content
+            #TODO: check_result.is_file_content = commit.file_content.contains(self.file_content)
 
         return check_result

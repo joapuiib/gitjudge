@@ -1,31 +1,31 @@
 from colorama import Fore, Style
 
-from gitjudge.entity import Commit, ExpectedCommit, CheckResult, NotFoundCommit, ReferencedItselfCommit
+from gitjudge.entity import Commit, CommitDefinition, CheckResult, NotFoundCommit, ReferencedItselfCommit
 
-def print_expected_commit(expected_commit: ExpectedCommit):
+def print_commit_definition(commit_definition: CommitDefinition):
     def print_item(name, value):
         print(f"{name}: {Fore.YELLOW}{value}{Fore.RESET}")
 
-    if expected_commit.start:
-        if isinstance(expected_commit.start, NotFoundCommit):
-            print_item(f"Start", f"({expected_commit.start.id}) {Fore.RED}not found{Fore.RESET}")
-        elif isinstance(expected_commit.start, Commit):
-            print_item(f"Start", f"({expected_commit.start.id}) {expected_commit.start.short_hash()}")
+    if commit_definition.start:
+        if isinstance(commit_definition.start, NotFoundCommit):
+            print_item(f"Start", f"({commit_definition.start.id}) {Fore.RED}not found{Fore.RESET}")
+        elif isinstance(commit_definition.start, Commit):
+            print_item(f"Start", f"({commit_definition.start.id}) {commit_definition.start.short_hash()}")
 
-    if expected_commit.end:
-        if isinstance(expected_commit.end, NotFoundCommit):
-            print_item(f"End", f"({expected_commit.end.id}) {Fore.RED}not found{Fore.RESET}")
-        elif isinstance(expected_commit.end, Commit):
-            print_item(f"End", f"({expected_commit.end.id}) {expected_commit.end.short_hash()}")
+    if commit_definition.end:
+        if isinstance(commit_definition.end, NotFoundCommit):
+            print_item(f"End", f"({commit_definition.end.id}) {Fore.RED}not found{Fore.RESET}")
+        elif isinstance(commit_definition.end, Commit):
+            print_item(f"End", f"({commit_definition.end.id}) {commit_definition.end.short_hash()}")
 
-    if expected_commit.message:
-        print_item("Message", expected_commit.message)
-    if expected_commit.tags:
-        print_item("Tags", expected_commit.tags)
-    if expected_commit.branches:
-        print_item("Branches", expected_commit.branches)
-    if expected_commit.parents:
-        print_item("Parents", expected_commit.parents)
+    if commit_definition.message:
+        print_item("Message", commit_definition.message)
+    if commit_definition.tags:
+        print_item("Tags", commit_definition.tags)
+    if commit_definition.branches:
+        print_item("Branches", commit_definition.branches)
+    if commit_definition.parents:
+        print_item("Parents", commit_definition.parents)
 
 
 def print_not_found_commit(not_found_commit: NotFoundCommit):
@@ -119,3 +119,14 @@ def print_commit(commit: Commit, check_result: CheckResult, limit_date: str = No
                 if diff_index.deletions:
                     for line, count in diff_index.deletions.items():
                         print(f"      {count}-: {line}")
+
+    if check_result.file_content:
+        file_content_correct = check_result.is_file_content
+        file_content_result = f"{Fore.GREEN}YES{Fore.RESET}" if file_content_correct else f"{Fore.RED}NO{Fore.RESET}"
+        if not file_content_correct:
+            for file, content in check_result.file_content.items():
+                print(f"- {Fore.CYAN}{file}{Fore.RESET}:")
+                print(f"    {Fore.YELLOW}Expected:{Fore.RESET}")
+                print(f"    {check_result.file_content[file]}")
+                print(f"    {Fore.YELLOW}Actual:{Fore.RESET}")
+                print(f"    {commit.get_file_content(file)}")

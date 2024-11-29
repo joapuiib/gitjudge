@@ -1,11 +1,11 @@
-from gitjudge.entity import Checks
+from gitjudge.entity.checks import *
 from gitjudge.entity import DiffList, DiffIndex
 
-def map_checks(d: dict) -> Checks:
+def map_checks(d: dict) -> Check:
     if not isinstance(d, dict):
         raise TypeError('Expected dict object')
 
-    checks = Checks()
+    checks = []
 
     # Branch and branches are mutually exclusive
     if 'branch' in d and 'branches' in d:
@@ -23,7 +23,7 @@ def map_checks(d: dict) -> Checks:
     if branch:
         branches += branch
 
-    checks.branches = branches
+    # checks.add(BranchCheck(branches))
 
     # Parent and parents are mutually exclusive
     if 'parent' in d and 'parents' in d:
@@ -33,7 +33,7 @@ def map_checks(d: dict) -> Checks:
     parent = d.get('parent')
     if parent:
         parents.append(parent)
-    checks.parents = parents
+    # checks.add(ParentCheck(parents))
 
     if len(parents) > 2:
         raise ValueError('Expected commit cannot have more than 2 parents')
@@ -46,12 +46,23 @@ def map_checks(d: dict) -> Checks:
     tag = d.get('tag')
     if tag:
         tags.append(tag)
-    checks.tags = tags
+    checks.add(TagCheck(tags))
 
-    checks.cherry_pick = d.get('cherry-pick', None) or d.get('cherry-picks', None)
+    cherry_pick = d.get('cherry-pick', None) or d.get('cherry-picks', None)
+    if cherry_pick:
+        # checks.add(CherryPickCheck(cherry_pick))
+        pass
+
     checks.reverts = d.get('reverts', None)
+    if checks.reverts:
+        # checks.add(RevertCheck(checks.reverts))
+        pass
     checks.squashes = d.get('squashes', None)
+    if checks.squashes:
+        # checks.add(SquashCheck(checks.squashes))
+        pass
 
+    """
     config_diff = d.get('diff', None)
     if config_diff:
         checks.diff = DiffList()
@@ -63,5 +74,8 @@ def map_checks(d: dict) -> Checks:
                 elif line.startswith('-'):
                     diffindex.add_deletion(line[1:])
             checks.diff.add(diffindex)
+
+    checks.file_content = d.get('file-content', None)
+    """
 
     return checks

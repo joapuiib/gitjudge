@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 
-from gitjudge.entity import Definition, ExpectedCommit, LogOptions
+from gitjudge.entity import Definition, CommitDefinition, LogOptions
 
 def test_givenConstructorWithoutName_shouldRaiseError():
     with pytest.raises(TypeError):
@@ -12,6 +12,6 @@ def test_givenConstructorWithName_shouldCreateDefinition():
 
     assert definition.name == "name"
     assert definition.limit_date == None
-    assert definition.expected_commits == []
+    assert definition.commits == []
     assert isinstance(definition.log_options, LogOptions)
 

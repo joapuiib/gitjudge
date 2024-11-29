@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from argparse import Namespace
 
-from gitjudge.entity import Repository, Commit, ExpectedCommit, Definition, Validator, DiffList, DiffIndex
+from gitjudge.entity import Repository, Commit, CommitDefinition, Definition, Validator, DiffList, DiffIndex
 
 @pytest.fixture(scope="session")
 def empty_repo(tmpdir_factory):
@@ -73,9 +73,9 @@ def repo(tmpdir_factory):
 def definition():
     definition = Definition("test-definition")
     definition.expected_commits = [
-        ExpectedCommit(id="1", message="1."),
-        ExpectedCommit(id="2", message="2."),
-        ExpectedCommit(id="3", message="3.", start="branch1"),
+        CommitDefinition(id="1", message="1."),
+        CommitDefinition(id="2", message="2."),
+        CommitDefinition(id="3", message="3.", start="branch1"),
     ]
     return definition
 
@@ -129,6 +129,8 @@ def found_commits():
 
 @pytest.fixture
 def validator(found_commits, definition, repo):
-    validator = Validator(repo, definition, Namespace(show=False))
-    validator.found_commits = found_commits
+    args = Namespace(show=False)
+    formatter = None
+    validator = Validator(args, definition, repo, formatter)
+    validator.resolver.found_commits = found_commits
     return validator
