@@ -1,14 +1,7 @@
-from gitjudge.entity import Commit
-
 class Check:
     def __init__(self):
-        self.tags = []
-        self.branches = []
-        self.cherry_pick = None
-        self.reverts = None
-        self.squashes = None
-        self.diff = None
-        self.file_content = None
+        self.checked = False
+        self.correct = False
 
 
     def __str__(self):
@@ -19,9 +12,11 @@ class Check:
         return self.__str__()
 
 
-    def resolve_references(self, resolver):
+    def resolve_references(self, commit_id, resolver):
         pass
 
 
-    def validate(self, commit: Commit) -> bool:
-        return True
+    def validate(self, commit, repo) -> bool:
+        self.checked = True
+        self.correct = True
+        return self.correct

@@ -21,8 +21,8 @@ dependencies = [
     "pyyaml",
 ]
 
-[project.entry-points."mkdocs.plugins"]
-data = "mkdocs_data_plugin.plugin:DataPlugin"
+[project.scripts]
+gitjudge = "gitjudge.gitjudge:main"
 
 [project.urls]
 Documentation = "https://joapuiib.github.io/gitjudge"

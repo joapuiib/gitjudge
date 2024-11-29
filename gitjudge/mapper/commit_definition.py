@@ -12,7 +12,7 @@ def map_commit_definition(id: str, d: dict) -> CommitDefinition:
     cd.end = d.get('end')
     cd.show = d.get('show', False)
 
-    checks = d.get('check', None)
+    checks = d.get('check', [])
     if checks:
         cd.checks = map_checks(checks)
 

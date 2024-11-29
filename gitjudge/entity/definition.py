@@ -16,7 +16,7 @@ class Definition:
         args.append(f"name={self.name}")
         if self.limit_date:
             args.append(f"limit_date={self.limit_date}")
-        if self.commit_definitions:
+        if self.commits:
             args.append(f"commits={self.commits}")
         if self.log_options:
             args.append(f"log_options={self.log_options}")

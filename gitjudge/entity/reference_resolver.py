@@ -5,15 +5,23 @@ from gitjudge.formatter import Formatter
 
 
 class ReferenceResolver:
-    def __init__(self):
+    def __init__(self, repo: Repository):
         self.references = {}
+        self.repo = repo
 
-    def resolve_reference(self, reference):
-        if reference in self.found_commits:
-            if reference == id:
-                return ReferencedItselfCommit()
+    def resolve_reference(self, commit_id, reference):
+        if reference and re.match(r"-?\d+", str(reference)):
+            if reference in self.references:
+                if reference == commit_id:
+                    return ReferencedItselfCommit(commit_id)
+                else:
+                    return self.references[reference]
             else:
-                return self.found_commits[reference]
+                return NotFoundCommit(commit_id)
+                # raise ValueError(f"{commit_ref.capitalize()} {ref_attr} not found in commits")
+
         else:
-            return NotFoundCommit()
-            # raise ValueError(f"{commit_ref.capitalize()} {ref_attr} not found in commits")
+            # TODO: Repensar resolve references from repo
+            commit = self.repo.find_commit_by_ref(reference)
+            return commit
+

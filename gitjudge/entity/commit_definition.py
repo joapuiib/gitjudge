@@ -48,14 +48,14 @@ class CommitDefinition:
 
     def resolve_references(self, resolver):
         if self.start:
-            self.start = resolver.resolve_reference(self.start)
+            self.start = resolver.resolve_reference(self.id, self.start)
             self.start.id = self.id
         if self.end:
-            self.end = resolver.resolve_reference(self.end)
+            self.end = resolver.resolve_reference(self.id, self.end)
             self.end.id = self.id
 
         for check in self.checks:
-            check.resolve_references(resolver)
+            check.resolve_references(self.id, resolver)
 
 
     def validate(self, commit, repo):

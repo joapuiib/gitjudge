@@ -30,11 +30,11 @@ def map_definition(d: dict) -> Definition:
             raise TypeError("limit_date is not a valid date")
     definition.limit_date = limit_date
 
-    commit_definitions = []
+    commits = []
     for id_commit, commit in d.get("commits", {}).items():
         commit_definition = map_commit_definition(id_commit, commit)
-        commit_definitions.append(commit_definition)
-    definition.commit_definitions = commit_definitions
+        commits.append(commit_definition)
+    definition.commits = commits
 
     if d.get("log"):
         definition.log_options = map_log_options(d["log"])

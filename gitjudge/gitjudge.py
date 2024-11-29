@@ -12,7 +12,7 @@ class GitJudge:
 
     def validate(self, repo_dir):
         repo = Repository(repo_dir)
-        validator = Validator(self.args, self.definition, self.formatter, repo)
+        validator = Validator(self.args, self.definition, repo, self.formatter)
         validator.validate()
 
 def main():

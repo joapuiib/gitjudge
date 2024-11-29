@@ -39,24 +39,22 @@ def test_dictLimitDateWithSeconds_ShouldCreateDefinition():
 def test_dictNoCommitDefinitions_ShouldBeEmptyList():
     d = {"name": "definition"}
     definition = map_definition(d)
-    assert isinstance(definition.commit_definitions, list)
-    assert len(definition.commit_definitions) == 0
+    assert definition.commits == []
 
 def test_dictEmptyCommitDefinitions_ShouldBeEmptyList():
     d = {"name": "definition", "commits": {}}
     definition = map_definition(d)
-    assert isinstance(definition.commit_definitions, list)
-    assert len(definition.commit_definitions) == 0
+    assert definition.commits == []
 
 def test_dictWithCommitDefinitions_ShouldCreateDefinition():
     commit_definition = {"message": "message"}
     d = {"name": "definition", "commits": {"1": commit_definition}}
 
     definition = map_definition(d)
-    assert len(definition.commit_definitions) == 1
-    assert isinstance(definition.commit_definitions[0], CommitDefinition)
-    assert definition.commit_definitions[0].id == "1"
-    assert definition.commit_definitions[0].message == "message"
+    assert len(definition.commits) == 1
+    assert isinstance(definition.commits[0], CommitDefinition)
+    assert definition.commits[0].id == "1"
+    assert definition.commits[0].message == "message"
 
 def test_dictWithLogOptions_ShouldCreateDefinition():
     d = {"name": "definition", "log": {"branches": ["branch1"], "all": True}}
