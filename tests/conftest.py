@@ -21,7 +21,7 @@ def empty_repo(tmpdir_factory):
 def repo(tmpdir_factory):
     """
     * ae33661 - (0 seconds ago) 3. added branch1.md - Joan Puigcerver (branch1)
-    | * 058a064 - (0 seconds ago) 4. added branch2.md - Joan Puigcerver (branch2)
+    | * 058a064 - (0 seconds ago) 4. added branch2.md - Joan Puigcerver (branch2, other_branch2)
     |/
     * 8ba96a6 - (0 seconds ago) 2. modified file1.md - Joan Puigcerver (HEAD -> main, tag: T3, tag: T2)
     * 1ebb397 - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
@@ -31,6 +31,8 @@ def repo(tmpdir_factory):
     repo = Repository(d)
 
     Path.touch(repo.directory_path / "file1.md")
+    with open(repo.directory_path / "file1.md", "a") as f:
+        f.write("1\n")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="1. added file1.md")
     repo.repo.git.tag("T1")
@@ -38,39 +40,52 @@ def repo(tmpdir_factory):
     repo.repo.git.branch("-m", "main")
 
     with open(repo.directory_path / "file1.md", "a") as f:
-        f.write("# Populated repo\n")
+        f.write("2\n")
     repo.repo.git.add('--all')
-    repo.repo.git.commit(m="2. added title to file1.md")
+    repo.repo.git.commit(m="2. modified file1.md")
     repo.repo.git.tag("T2")
     repo.repo.git.tag("T3")
 
     repo.repo.git.checkout("-b", "branch1")
     Path.touch(repo.directory_path / "branch1.md")
+    with open(repo.directory_path / "branch1.md", "a") as f:
+        f.write("3\n")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="3. added branch1.md")
 
     repo.repo.git.checkout("main")
     repo.repo.git.checkout("-b", "branch2")
     Path.touch(repo.directory_path / "branch2.md")
+    with open(repo.directory_path / "branch1.md", "a") as f:
+        f.write("4\n")
     repo.repo.git.add('--all')
     repo.repo.git.commit(m="4. added branch2.md")
+    repo.repo.git.branch("branch2.2")
+
+    repo.repo.git.checkout("main")
+    repo.repo.git.checkout("-b", "revert-cherry")
+    repo.repo.git.revert("main", no_commit=True)
+    repo.repo.git.commit(m="5. Revert \"2. modified file1.md\"")
+    repo.repo.git.cherry_pick("main", no_commit=True)
+    repo.repo.git.commit(m="6. Cherry-pick \"2. modified file1.md\"")
 
     repo.repo.git.checkout("main")
     repo.repo.git.checkout("-b", "squash-branch")
     with open(repo.directory_path / "file1.md", "a") as f:
-        f.write("- first change to file1.md\n")
+        f.write("7")
     repo.repo.git.add('--all')
-    repo.repo.git.commit(m="5. first change to file1.md")
+    repo.repo.git.commit(m="7. first change squash")
 
     with open(repo.directory_path / "file1.md", "a") as f:
-        f.write("- second change to file1.md\n")
+        f.write("8")
     repo.repo.git.add('--all')
-    repo.repo.git.commit(m="6. second change to file1.md")
+    repo.repo.git.commit(m="8. second change squash")
 
     repo.repo.git.checkout("main")
+    repo.repo.git.checkout("-b", "squashed")
     repo.repo.git.merge("--squash", "squash-branch")
-    repo.repo.git.commit(m="7. Squashed changes to file1.md")
-    repo.repo.git.tag("Squashed")
+    repo.repo.git.commit(m="9. Squashed changes to file1.md")
+    repo.repo.git.tag("squashed")
 
     repo.repo.git.checkout("main")
     return repo
@@ -103,6 +118,7 @@ def found_commits():
             2,
             message="2. modified file1.md",
             tags=["T2", "T3"],
+            branches=["main"],
             diff=DiffList({
                 "file1.md": DiffIndex(
                     "file1.md",
@@ -112,7 +128,29 @@ def found_commits():
         ),
         3: Commit(
             3,
-            message="Revert \"Commit 2\"",
+            message="Added branch1.md",
+            branches=["branch1"],
+            diff=DiffList({
+                "branch1.md": DiffIndex(
+                    "branch1.md",
+                    deletions={"3": 1}
+                )
+            })
+        ),
+        4: Commit(
+            4,
+            message="Added branch2.md",
+            branches=["branch2", "branch2.2"],
+            diff=DiffList({
+                "branch2.md": DiffIndex(
+                    "branch2.md",
+                    additions={"4": 1}
+                )
+            })
+        ),
+        5: Commit(
+            5,
+            message='5. Revert "2. modified file1.md"',
             diff=DiffList({
                 "file1.md": DiffIndex(
                     "file1.md",
@@ -120,13 +158,46 @@ def found_commits():
                 )
             })
         ),
-        4: Commit(
-            4,
-            message="Cherry-pick \"Commit 1\"",
+        6: Commit(
+            6,
+            message='6. Cherry-pick "2. modified file1.md"',
             diff=DiffList({
                 "file1.md": DiffIndex(
                     "file1.md",
-                    additions={"1": 1}
+                    additions={"2": 1}
+                )
+            })
+        ),
+        7: Commit(
+            7,
+            message='7. first change squash',
+            diff=DiffList({
+                "file1.md": DiffIndex(
+                    "file1.md",
+                    additions={"7": 1}
+                )
+            })
+        ),
+        8: Commit(
+            8,
+            message='8. second change squash',
+            branches=["squash-branch"],
+            diff=DiffList({
+                "file1.md": DiffIndex(
+                    "file1.md",
+                    additions={"8": 1}
+                )
+            })
+        ),
+        9: Commit(
+            9,
+            message='9. Squashed changes to file1.md',
+            branches=["squashed"],
+            tags=["squashed"],
+            diff=DiffList({
+                "file1.md": DiffIndex(
+                    "file1.md",
+                    additions={"7": 1, "8": 1}
                 )
             })
         ),

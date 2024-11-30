@@ -1,4 +1,5 @@
 from gitjudge.entity.commit import Commit
+from gitjudge.entity.repository import Repository
 
 from .check import Check
 
@@ -21,9 +22,9 @@ class SquashCheck(Check):
             self.references[i] = resolver.resolve_reference(commit_id, r)
 
 
-    def validate(self, commit: Commit) -> bool:
+    def validate(self, commit: Commit, repo: Repository) -> bool:
         super().validate(commit, repo)
 
-        self.correct = commit.squashes(self.squashes)
+        self.correct = commit.squashes(self.references)
 
         return self.correct

@@ -4,7 +4,7 @@ from .difflist import DiffList
 
 
 class Commit:
-    def __init__(self, id, message="", tags=[], diff=None):
+    def __init__(self, id, message="", branches=[], tags=[], diff=None):
         self.id = id
         self.message = message
         self.hash = ""
@@ -14,7 +14,7 @@ class Commit:
             diff = DiffList()
         self.diff = diff
 
-        self.branches = []
+        self.branches = branches
         self.tags = tags
         self.parents = []
 

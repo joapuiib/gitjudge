@@ -1,4 +1,5 @@
 from gitjudge.entity.commit import Commit
+from gitjudge.entity.repository import Repository
 
 from .check import Check
 
@@ -20,7 +21,7 @@ class CherryPickCheck(Check):
         self.reference = resolver.resolve_reference(commit_id, self.reference)
 
 
-    def validate(self, commit: Commit) -> bool:
+    def validate(self, commit: Commit, repo: Repository) -> bool:
         super().validate(commit, repo)
 
         self.correct = commit.is_cherry_picked_from(self.reference)

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3.8
 import argparse
 
-from gitjudge.entity import Repository, Validator
+from gitjudge.entity.repository import Repository
+from gitjudge.entity.validator import Repository, Validator
 from gitjudge.formatter import StdoutFormatter
 from gitjudge.mapper.definition import load_definition
 
@@ -22,14 +23,6 @@ def main():
     parser.add_argument("definition_file", help="Path to the definition file.")
     parser.add_argument("dir", nargs="+", help="Git Directory to validate.")
     parser.add_argument("--show", action="store_true")
-    # parser.add_argument("--verbose", action="store_true")
-    # parser.add_argument("--remove-color", action="store_true", default=False)
-    # parser.add_argument("-g", "--disable-git", action="store_true", default=False)
-    # parser.add_argument("-i", "--interactive", action="store_true", default=False)
-    # parser.add_argument("-v", "--volume", action="append", default=[])
-    # parser.add_argument("--copy", action="store_true", default=False)
-    # parser.add_argument("--save", nargs="?", default=False)
-    # parser.add_argument("--light", help="Enables lightmode syntax highlighting",  action="store_true", default=False)
     args = parser.parse_args()
 
     gitjudge = GitJudge(args)
