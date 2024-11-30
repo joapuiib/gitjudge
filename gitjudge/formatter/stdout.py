@@ -10,11 +10,11 @@ class StdoutFormatter:
     def __init__(self):
         self.checkFormatter = {
             "BranchCheck": self.print_branch_check,
-            "CherryPickCheck": None,
+            "CherryPickCheck": self.print_cherry_pick_check,
             "DiffCheck": self.print_diff_check,
             "FileContentCheck": self.print_file_content_check,
-            "RevertsCheck": None,
-            "SquashCheck": None,
+            "RevertsCheck": self.print_reverts_check,
+            "SquashCheck": self.print_squash_check,
             "TagCheck": self.print_tag_check,
         }
 
@@ -120,6 +120,18 @@ class StdoutFormatter:
             print(f"  - Has {Fore.YELLOW}'{branch}'{Fore.RESET} branch? {result}")
 
 
+    def print_cherry_pick_check(self, check, commit, repo):
+        if isinstance(check.reference, NotFoundCommit):
+            print(f"- Cherry-picked from commit ({check.reference.id}) {Fore.RED}not found{Fore.RESET}.")
+        elif isinstance(check.reference, ReferencedItselfCommit):
+            print(f"- Cherry-picked from commit {Fore.RED}can't reference itself{Fore.RESET}.")
+        else:
+            result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+            _id = check.reference.id
+            _hash = check.reference.short_hash()
+            print(f"- Is cherry-picked from {Fore.YELLOW}'({_id}) {_hash}'{Fore.RESET}? {revert_result}")
+
+
     def print_diff_check(self, check, commit, repo):
         diff_correct = check.correct
         diff_result = (
@@ -167,6 +179,24 @@ class StdoutFormatter:
                 actual_content = check.strip_lines(actual_content)
                 actual_content = "\n".join([f"      {line}" for line in actual_content.split("\n")])
                 print(f"{actual_content}")
+
+
+    def print_reverts_check(self, check, commit, repo):
+        if isinstance(check.reference, NotFoundCommit):
+            print(f"- Reverting commit ({check.reference.id}) {Fore.RED}not found{Fore.RESET}.")
+        elif isinstance(check.reference, ReferencedItselfCommit):
+            print(f"- Reverting commit {Fore.RED}can't reference itself{Fore.RESET}.")
+        else:
+            result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+            _id = check.reference.id
+            _hash = check.reference.short_hash()
+            print(f"- Reverts {Fore.YELLOW}'({_id}) {_hash}'{Fore.RESET}? {revert_result}")
+
+
+    def print_squash_check(self, check, commit, repo):
+        squash_result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+        squash_output = ", ".join([f"{commit.short_hash()}" for commit in check_result.references])
+        print(f"- Does squash {Fore.YELLOW}'{squash_output}'{Fore.RESET}? {squash_result}")
 
 
     def print_tag_check(self, check, commit, repo):
