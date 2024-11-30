@@ -8,6 +8,7 @@ def map_commit_definition(id: str, d: dict) -> CommitDefinition:
 
     cd = CommitDefinition(id)
 
+    cd.ref = d.get('ref')
     cd.message = d.get('message')
     cd.start = d.get('start')
     cd.end = d.get('end')

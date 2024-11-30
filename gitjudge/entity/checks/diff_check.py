@@ -1,4 +1,4 @@
-from gitjudge.entity.commit import Commit, DiffList
+from gitjudge.entity.commit import Commit
 from gitjudge.entity.difflist import DiffList
 
 from .check import Check

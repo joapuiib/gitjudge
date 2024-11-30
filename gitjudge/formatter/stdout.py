@@ -12,6 +12,7 @@ class StdoutFormatter:
             "BranchCheck": self.print_branch_check,
             "CherryPickCheck": None,
             "DiffCheck": self.print_diff_check,
+            "FileContentCheck": self.print_file_content_check,
             "RevertsCheck": None,
             "SquashCheck": None,
             "TagCheck": self.print_tag_check,
@@ -102,13 +103,22 @@ class StdoutFormatter:
         for check in commit_definition.checks:
             self.print_check(check, commit, repo)
 
+
     def print_check(self, check, commit, repo):
-        self.checkFormatter[type(check).__name__](check, commit, repo)
+        f = self.checkFormatter.get(type(check).__name__, self.print_check_fallback)
+        f(check, commit, repo)
+
+
+    def print_check_fallback(self, check, commit, repo):
+        result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+        print(f"  - {check}: {result}")
+
 
     def print_branch_check(self, check, commmit, repo):
         for branch, correct in check.branches.items():
             result = f"{Fore.GREEN}YES{Fore.RESET}" if correct else f"{Fore.RED}NO{Fore.RESET}"
             print(f"  - Has {Fore.YELLOW}'{branch}'{Fore.RESET} branch? {result}")
+
 
     def print_diff_check(self, check, commit, repo):
         diff_correct = check.correct
@@ -137,7 +147,49 @@ class StdoutFormatter:
                     for line, count in diff_index.deletions.items():
                         print(f"        {count}-: {line}")
 
+
+    def print_file_content_check(self, check, commit, repo):
+        file_content_correct = check.correct
+        file_content_result = (
+            f"{Fore.GREEN}YES{Fore.RESET}" if file_content_correct else f"{Fore.RED}NO{Fore.RESET}"
+        )
+        for file, correct in check.results.items():
+            result = f"{Fore.GREEN}YES{Fore.RESET}" if correct else f"{Fore.RED}NO{Fore.RESET}"
+            print(f"  - Is {Fore.YELLOW}'{file}'{Fore.RESET} content correct? {result}")
+            if not correct:
+                print(f"    {Fore.YELLOW}Expected content:{Fore.RESET}")
+                expected_content = check.file_contents[file]
+                expected_content = check.strip_lines(expected_content)
+                expected_content = "\n".join([f"      {line}" for line in expected_content.split("\n")])
+                print(f"{expected_content}")
+                print(f"    {Fore.YELLOW}Actual content:{Fore.RESET}")
+                actual_content = repo.get_file_content_from_ref(file, commit.hash)
+                actual_content = check.strip_lines(actual_content)
+                actual_content = "\n".join([f"      {line}" for line in actual_content.split("\n")])
+                print(f"{actual_content}")
+
+
     def print_tag_check(self, check, commit, repo):
         for tag, correct in check.tags.items():
             result = f"{Fore.GREEN}YES{Fore.RESET}" if correct else f"{Fore.RED}NO{Fore.RESET}"
             print(f"- Has {Fore.YELLOW}'{tag}'{Fore.RESET} tag? {result}")
+
+
+    def print_log(self, definition: Definition, repo: Repository):
+        first_commit = None
+        last_commit = None
+        for cd in definition.commits:
+            if cd.commit:
+                if not first_commit or cd.commit.id < first_commit.id:
+                    first_commit = cd.commit
+                if not last_commit or cd.commit.id > last_commit.id:
+                    last_commit = cd.commit
+
+        print()
+        print(f"==== {Fore.BLUE}{Style.BRIGHT}Repository log{Style.RESET_ALL}{Fore.RESET} ====")
+        repo.print_log(
+            start=first_commit,
+            end=last_commit,
+            branches=definition.log_options.branches,
+            all=definition.log_options.all
+        )

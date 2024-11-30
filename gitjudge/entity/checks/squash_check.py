@@ -5,7 +5,7 @@ from .check import Check
 
 
 class SquashCheck(Check):
-    def __init__(self, references: list):
+    def __init__(self, references: any):
         self.references = references
 
 

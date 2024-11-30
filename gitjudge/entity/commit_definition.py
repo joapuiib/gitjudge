@@ -1,6 +1,7 @@
 class CommitDefinition:
-    def __init__(self, id: str, message: str = None, start: str = None, end: str = None):
+    def __init__(self, id: str, ref: str = None, message: str = None, start: str = None, end: str = None):
         self.id = id
+        self.ref = ref
         self.message = message
         self.start = start
         self.end = end
@@ -11,6 +12,7 @@ class CommitDefinition:
         self.show = False
         self.checks = []
 
+        self.commit = None
         self.is_correct = False
 
 
@@ -33,6 +35,8 @@ class CommitDefinition:
     def __str__(self):
         args = []
         args.append(f"id={self.id}")
+        if self.ref:
+            args.append(f"ref={self.ref}")
         if self.message:
             args.append(f"message={self.message}")
         if self.start:

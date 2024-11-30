@@ -24,6 +24,7 @@ class Validator:
         for cd in self.definition.commits:
             cd.resolve_references(self.resolver)
             commit = self.repo.find_commit(cd)
+            cd.commit = commit
 
             # If commit is found, validate it
             if isinstance(commit, NotFoundCommit):
@@ -32,3 +33,6 @@ class Validator:
             else:
                 cd.validate(commit, self.repo)
                 self.formatter.print_commit(self.definition, cd, commit, self.repo)
+
+        self.formatter.print_log(self.definition, self.repo)
+
