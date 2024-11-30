@@ -1,4 +1,5 @@
-from gitjudge.entity import Commit
+from gitjudge.entity.commit import Commit
+
 
 class Check:
     def __init__(self):

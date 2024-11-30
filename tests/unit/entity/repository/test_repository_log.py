@@ -1,6 +1,7 @@
 import pytest
 import re
 
+
 def testLog_GivenExistingRepo_ShouldReturnLog(repo):
     # Act
     log = repo.log()

@@ -4,7 +4,8 @@ import git
 import subprocess
 import os
 
-from gitjudge.entity import Definition, Repository
+from gitjudge.entity.definition import Definition
+from gitjudge.entity.repository import Repository
 
 def test_givenRepositoryWhithoutArgs_shouldRaiseError():
     with pytest.raises(TypeError):

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3.8
 import argparse
 
-from gitjudge.mapper.definition import load_definition
 from gitjudge.entity import Repository, Validator
 from gitjudge.formatter import StdoutFormatter
+from gitjudge.mapper.definition import load_definition
+
 
 class GitJudge:
     def __init__(self, args):

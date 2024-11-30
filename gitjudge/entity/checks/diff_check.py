@@ -1,5 +1,8 @@
-from gitjudge.entity import Commit, DiffList
-from gitjudge.entity.checks import Check
+from gitjudge.entity.commit import Commit, DiffList
+from gitjudge.entity.difflist import DiffList
+
+from .check import Check
+
 
 class DiffCheck(Check):
     def __init__(self, diff: DiffList):

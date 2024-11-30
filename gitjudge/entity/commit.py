@@ -1,6 +1,7 @@
 import re
 
-from gitjudge.entity import DiffList
+from .difflist import DiffList
+
 
 class Commit:
     def __init__(self, id, message="", tags=[], diff=None):

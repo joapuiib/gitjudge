@@ -1,6 +1,9 @@
 import pytest
 
-from gitjudge.entity import Commit, CommitDefinition, NotFoundCommit, ReferencedItselfCommit, DiffList, DiffIndex
+from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommit
+from gitjudge.entity.commit_definition import CommitDefinition
+from gitjudge.entity.diffindex import DiffIndex
+from gitjudge.entity.difflist import DiffList
 
 def testFindCommit_GivenNonCommitDefinitionParameter_ShouldRaiseError(empty_repo):
     with pytest.raises(TypeError):

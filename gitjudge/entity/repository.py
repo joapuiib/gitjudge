@@ -1,9 +1,14 @@
 import os
-import git
-import subprocess
 import re
+import subprocess
 
-from gitjudge.entity import Definition, Commit, CommitDefinition, NotFoundCommit, ReferencedItselfCommit, DiffList
+import git
+
+from .commit import Commit, NotFoundCommit, ReferencedItselfCommit
+from .commit_definition import CommitDefinition
+from .definition import Definition
+from .difflist import DiffList
+
 
 class Repository:
     def __init__(self, directory_path):
@@ -13,9 +18,8 @@ class Repository:
 
         self.repo = git.Repo(directory_path)
 
-
     def log_command(self, start=None, end=None, branches=None, all=False):
-        git_log_command = "git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'" # --all"
+        git_log_command = "git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'"  # --all"
 
         if start is not None and end is not None:
             short_start = start.short_hash()
@@ -34,19 +38,19 @@ class Repository:
         if all:
             git_log_command = git_log_command + " --all"
 
-
         return git_log_command
 
     def log(self, start=None, end=None, branches=None, all=False):
         git_log_command = self.log_command(start, end, branches, all)
-        result = subprocess.run(git_log_command, cwd=self.directory_path, shell=True, capture_output=True, text=True)
+        result = subprocess.run(
+            git_log_command, cwd=self.directory_path, shell=True, capture_output=True, text=True
+        )
         return result.stdout
 
     def print_log(self, start=None, end=None, branches=None, all=False):
         git_log_command = self.log_command(start, end, branches, all)
         subprocess.run(git_log_command, cwd=self.directory_path, shell=True)
         print("")
-
 
     # Not unit tested, but tested in find_commit
     def get_tags_for_commit(self, commit: git.Commit):
@@ -67,7 +71,6 @@ class Repository:
                 branches.append(branch.name)
         return branches
 
-
     def _create_commit(self, commit: git.Commit, id=None):
         result = Commit(id)
         result.message = commit.message.strip()
@@ -83,17 +86,14 @@ class Repository:
 
         return result
 
-
     def show(self, ref):
         print(self.repo.git.show(ref, color='always'))
-
 
     def find_commit_by_ref(self, ref):
         if ref in self.repo.refs:
             return self._create_commit(self.repo.commit(ref), ref)
 
         return NotFoundCommit(ref)
-
 
     def find_commits_in_branch(self, branch, end=None):
         if end is not None:
@@ -110,8 +110,6 @@ class Repository:
             commits.append(self._create_commit(commit))
 
         return commits
-
-
 
     def find_commit(self, commit_definition):
         """
@@ -197,7 +195,9 @@ class Repository:
 
         commit_found = None
         for commit in list_commits:
-            commit_definition_pattern = re.compile("^" + commit_definition.message + ".*", re.IGNORECASE)
+            commit_definition_pattern = re.compile(
+                "^" + commit_definition.message + ".*", re.IGNORECASE
+            )
             if re.match(commit_definition_pattern, commit.message.strip()):
                 commit_found = commit
                 break

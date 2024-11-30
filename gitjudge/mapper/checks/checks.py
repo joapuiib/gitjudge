@@ -1,12 +1,14 @@
-from gitjudge.entity import DiffList, DiffIndex
 from gitjudge.entity.checks import Check
+from gitjudge.entity.diffindex import DiffIndex
+from gitjudge.entity.difflist import DiffList
 
-from gitjudge.mapper.checks.branch_check import map_branch_check
-from gitjudge.mapper.checks.cherry_pick_check import map_cherry_pick_check
-from gitjudge.mapper.checks.diff_check import map_diff_check
-from gitjudge.mapper.checks.reverts_check import map_reverts_check
-from gitjudge.mapper.checks.squash_check import map_squash_check
-from gitjudge.mapper.checks.tag_check import map_tag_check
+from .branch_check import map_branch_check
+from .cherry_pick_check import map_cherry_pick_check
+from .diff_check import map_diff_check
+from .reverts_check import map_reverts_check
+from .squash_check import map_squash_check
+from .tag_check import map_tag_check
+
 
 def map_checks(d: dict) -> []:
     if not isinstance(d, dict):

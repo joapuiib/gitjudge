@@ -1,5 +1,7 @@
 import pytest
-from gitjudge.entity import Commit
+
+from gitjudge.entity.commit import Commit
+
 
 def test_giventCommitWithNohash_thenEmptyHashIsReturned():
     commit = Commit(1)

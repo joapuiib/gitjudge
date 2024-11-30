@@ -1,5 +1,8 @@
 import pytest
-from gitjudge.entity import Commit, DiffList
+
+from gitjudge.entity.commit import Commit
+from gitjudge.entity.difflist import DiffList
+
 
 def test_givenConstructorWithoutID_shouldRaiseError():
     with pytest.raises(TypeError):

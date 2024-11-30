@@ -1,5 +1,7 @@
-from gitjudge.entity import DiffList, DiffIndex
 from gitjudge.entity.checks import DiffCheck
+from gitjudge.entity.diffindex import DiffIndex
+from gitjudge.entity.difflist import DiffList
+
 
 def map_diff_check(d: dict) -> list:
     if not isinstance(d, dict):

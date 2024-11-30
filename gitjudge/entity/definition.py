@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from gitjudge.entity import LogOptions
+from .log_options import LogOptions
+
 
 class Definition:
     def __init__(self, name: str):

@@ -1,5 +1,5 @@
-from gitjudge.entity.checks import *
-from gitjudge.entity.checks import TagCheck
+from gitjudge.entity.checks import BranchCheck
+
 
 def map_branch_check(d: dict) -> list:
     if not isinstance(d, dict):

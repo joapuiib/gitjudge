@@ -1,5 +1,9 @@
 import pytest
-from gitjudge.entity import Commit, DiffList, DiffIndex
+
+from gitjudge.entity.commit import Commit
+from gitjudge.entity.difflist import DiffList
+from gitjudge.entity.diffindex import DiffIndex
+
 
 def test_giventNoCommit_shouldRaiseError():
     commit = Commit(1)

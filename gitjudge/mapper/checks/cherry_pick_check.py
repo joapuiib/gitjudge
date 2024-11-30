@@ -1,5 +1,5 @@
-from gitjudge.entity.checks import *
 from gitjudge.entity.checks import CherryPickCheck
+
 
 def map_cherry_pick_check(d: dict) -> list:
     if not isinstance(d, dict):

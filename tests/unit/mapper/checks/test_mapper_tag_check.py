@@ -1,6 +1,6 @@
 import pytest
 from gitjudge.mapper.checks.tag_check import map_tag_check
-from gitjudge.entity.checks import TagCheck
+from gitjudge.entity.checks.tag_check import TagCheck
 
 def test_givenDictWithTagAndTags_shouldRaiseError():
     d = {'tag': 'tag', 'tags': ['tag1', 'tag2']}

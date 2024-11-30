@@ -1,5 +1,6 @@
-from gitjudge.entity import CommitDefinition
-from gitjudge.mapper import map_checks
+from gitjudge.entity.commit_definition import CommitDefinition
+from gitjudge.mapper.checks.checks import map_checks
+
 
 def map_commit_definition(id: str, d: dict) -> CommitDefinition:
     if not isinstance(d, dict):

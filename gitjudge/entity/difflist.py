@@ -1,4 +1,5 @@
-from gitjudge.entity import DiffIndex
+from .diffindex import DiffIndex
+
 
 class DiffList:
 

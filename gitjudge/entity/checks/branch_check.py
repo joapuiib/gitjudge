@@ -1,5 +1,7 @@
-from gitjudge.entity import Commit, CheckResult
-from gitjudge.entity.checks import Check
+from gitjudge.entity.commit import Commit
+
+from .check import Check
+
 
 class BranchCheck(Check):
     def __init__(self, branches=[]):

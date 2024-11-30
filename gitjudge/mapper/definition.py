@@ -1,9 +1,11 @@
 from datetime import datetime
+
 import yaml
 
-from gitjudge.entity import Definition
-from gitjudge.mapper import map_commit_definition
-from gitjudge.mapper import map_log_options
+from gitjudge.entity.definition import Definition
+from gitjudge.mapper.commit_definition import map_commit_definition
+from gitjudge.mapper.log_options import map_log_options
+
 
 def parse_date(date_str):
     formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M" ,"%Y-%m-%d"]

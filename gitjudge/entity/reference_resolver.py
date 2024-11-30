@@ -1,7 +1,10 @@
 import re
 
-from gitjudge.entity import Definition, Repository, Commit, NotFoundCommit, ReferencedItselfCommit
 from gitjudge.formatter import Formatter
+
+from .commit import Commit, NotFoundCommit, ReferencedItselfCommit
+from .definition import Definition
+from .repository import Repository
 
 
 class ReferenceResolver:

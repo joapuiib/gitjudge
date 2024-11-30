@@ -1,6 +1,8 @@
 import pytest
 
-from gitjudge.entity import DiffList, DiffIndex
+from gitjudge.entity.diffindex import DiffIndex
+from gitjudge.entity.difflist import DiffList
+
 
 def test_invert_empty_difflist():
     difflist = DiffList()

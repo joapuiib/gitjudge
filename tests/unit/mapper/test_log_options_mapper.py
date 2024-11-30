@@ -1,7 +1,7 @@
 import pytest
 
-from gitjudge.mapper import map_log_options
-from gitjudge.entity import LogOptions
+from gitjudge.mapper.log_options import map_log_options
+from gitjudge.entity.log_options import LogOptions
 
 def testMap_givenWrongType_ShouldRaiseError():
     # Arrange

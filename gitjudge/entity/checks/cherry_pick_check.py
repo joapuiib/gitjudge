@@ -1,5 +1,7 @@
-from gitjudge.entity import Commit
-from gitjudge.entity.checks import Check
+from gitjudge.entity.commit import Commit
+
+from .check import Check
+
 
 class CherryPickCheck(Check):
     def __init__(self, reference):

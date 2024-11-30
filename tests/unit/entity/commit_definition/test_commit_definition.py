@@ -1,5 +1,5 @@
 import pytest
-from gitjudge.entity import CommitDefinition
+from gitjudge.entity.commit_definition import CommitDefinition
 
 def test_givenConstructorWithoutID_shouldThrowError():
     with pytest.raises(TypeError):

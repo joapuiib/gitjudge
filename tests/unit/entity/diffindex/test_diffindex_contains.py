@@ -1,6 +1,6 @@
 import pytest
 
-from gitjudge.entity import DiffIndex
+from gitjudge.entity.diffindex import DiffIndex
 
 def test_contains_empty():
     diff1 = DiffIndex("")

@@ -1,4 +1,5 @@
-from gitjudge.entity import LogOptions
+from gitjudge.entity.log_options import LogOptions
+
 
 def map_log_options(d: dict):
     log_options = LogOptions()

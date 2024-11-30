@@ -1,5 +1,5 @@
-from gitjudge.entity.checks import *
 from gitjudge.entity.checks import RevertsCheck
+
 
 def map_reverts_check(d: dict) -> list:
     if not isinstance(d, dict):

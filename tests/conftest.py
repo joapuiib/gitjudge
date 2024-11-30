@@ -3,7 +3,13 @@ import os
 from pathlib import Path
 from argparse import Namespace
 
-from gitjudge.entity import Repository, Commit, CommitDefinition, Definition, Validator, DiffList, DiffIndex
+from gitjudge.entity.commit import Commit
+from gitjudge.entity.commit_definition import CommitDefinition
+from gitjudge.entity.definition import Definition
+from gitjudge.entity.difflist import DiffList
+from gitjudge.entity.diffindex import DiffIndex
+from gitjudge.entity.repository import Repository
+from gitjudge.entity.validator import Validator
 
 @pytest.fixture(scope="session")
 def empty_repo(tmpdir_factory):

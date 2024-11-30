@@ -1,7 +1,9 @@
 import pytest
 from datetime import datetime
 
-from gitjudge.entity import Definition, CommitDefinition, LogOptions
+from gitjudge.entity.definition import Definition
+from gitjudge.entity.commit_definition import CommitDefinition
+from gitjudge.entity.log_options import LogOptions
 
 def test_givenConstructorWithoutName_shouldRaiseError():
     with pytest.raises(TypeError):

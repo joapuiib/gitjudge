@@ -1,6 +1,8 @@
 import pytest
 
-from gitjudge.entity import Repository, Commit, NotFoundCommit
+from gitjudge.entity.commit import Commit, NotFoundCommit
+from gitjudge.entity.repository import Repository
+
 
 def testFindByRef_givenEmptyRepo_expectNotFound(empty_repo):
     repo = empty_repo

@@ -2,7 +2,8 @@ import pytest
 from datetime import datetime
 
 from gitjudge.mapper.definition import map_definition
-from gitjudge.entity import Definition, CommitDefinition
+from gitjudge.entity.definition import Definition
+from gitjudge.entity.commit_definition import CommitDefinition
 
 def test_dictWithoutName_ShouldRaiseError():
     with pytest.raises(TypeError):

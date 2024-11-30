@@ -1,5 +1,6 @@
 import pytest
-from gitjudge.entity import Validator
+
+from gitjudge.entity.validator import Validator
 
 def test_givenValidatorWhithoutArgs_shouldRaiseError():
     with pytest.raises(TypeError):

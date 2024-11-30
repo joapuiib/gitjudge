@@ -1,7 +1,7 @@
 import pytest
 
-from gitjudge.mapper import map_commit_definition
-from gitjudge.entity import CommitDefinition
+from gitjudge.mapper.commit_definition import map_commit_definition
+from gitjudge.entity.commit_definition import CommitDefinition
 
 def testMap_givenWrongType_shouldRaiseError():
     with pytest.raises(TypeError):
