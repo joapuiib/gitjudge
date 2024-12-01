@@ -1,5 +1,7 @@
 class CommitDefinition:
-    def __init__(self, id: str, ref: str = None, message: str = None, start: str = None, end: str = None):
+    def __init__(
+        self, id: str, ref: str = None, message: str = None, start: str = None, end: str = None
+    ):
         self.id = id
         self.ref = ref
         self.message = message
@@ -15,22 +17,17 @@ class CommitDefinition:
         self.commit = None
         self.is_correct = False
 
-
     def set_message(self, message):
         self.message = message
-
 
     def add_branch(self, branch):
         self.branches.append(branch)
 
-
     def add_tag(self, tag):
         self.tags.append(tag)
 
-
     def add_check(self, check):
         self.checks.append(check)
-
 
     def __str__(self):
         args = []
@@ -47,10 +44,8 @@ class CommitDefinition:
             args.append(f"checks={self.checks}")
         return f"CommitDefinition({', '.join(args)})"
 
-
     def __repr__(self):
         return self.__str__()
-
 
     def resolve_references(self, resolver):
         if self.start:
@@ -62,7 +57,6 @@ class CommitDefinition:
 
         for check in self.checks:
             check.resolve_references(self.id, resolver)
-
 
     def validate(self, commit, repo):
         self.is_correct = True

@@ -1,5 +1,3 @@
-import pytest
-
 from gitjudge.entity.checks import TagCheck
 
 """
@@ -10,6 +8,7 @@ from gitjudge.entity.checks import TagCheck
 * 1ebb397 - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
 """
 repo = None
+
 
 def test_hasSingleTag_shouldBeCorrect(found_commits):
     check = TagCheck(["T1"])
@@ -30,6 +29,7 @@ def test_hasSingleTag_shouldBeIncorrect(found_commits):
     assert not check.correct
     assert check.tags == {"T2": False}
 
+
 def test_hasAllTags_shouldBeCorrect(found_commits):
     check = TagCheck(["T2", "T3"])
     commit = found_commits[2]
@@ -38,6 +38,7 @@ def test_hasAllTags_shouldBeCorrect(found_commits):
     assert correct
     assert check.correct
     assert check.tags == {"T2": True, "T3": True}
+
 
 def test_hasSomeTags_shouldBeIncorrect(found_commits):
     check = TagCheck(["T2", "T4"])

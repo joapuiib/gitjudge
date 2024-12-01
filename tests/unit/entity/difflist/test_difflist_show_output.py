@@ -1,6 +1,3 @@
-import pytest
-
-from gitjudge.entity.diffindex import DiffIndex
 from gitjudge.entity.difflist import DiffList
 
 
@@ -26,6 +23,7 @@ index f63f268..4afe310 100644
     assert difflist.diffs["file.md"].additions == {"Add": 1}
     assert difflist.diffs["file.md"].deletions == {"Del": 2}
 
+
 def test_create_diff_with_addition_and_deletion_merge_commit():
     diff = """\
 diff --cc file.md
@@ -48,6 +46,7 @@ index f63f268,4afe310..4afe310
     assert difflist.diffs["file.md"].file_path == "file.md"
     assert difflist.diffs["file.md"].additions == {"Add": 2}
     assert difflist.diffs["file.md"].deletions == {"Del": 2}
+
 
 def test_create_diff_with_multiple_files():
     diff = """\
@@ -110,4 +109,3 @@ index e69de29..ccd0f29 100644
     assert difflist.diffs["file1.md"].file_path == "file1.md"
     assert difflist.diffs["file1.md"].additions == {"# Populated repo": 1}
     assert difflist.diffs["file1.md"].deletions == {}
-

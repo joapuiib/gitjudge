@@ -6,7 +6,6 @@ import git
 
 from .commit import Commit, NotFoundCommit, ReferencedItselfCommit
 from .commit_definition import CommitDefinition
-from .definition import Definition
 from .difflist import DiffList
 
 
@@ -17,7 +16,6 @@ class Repository:
             raise ValueError("Path does not exist")
 
         self.repo = git.Repo(directory_path)
-
 
     def log_command(self, start=None, end=None, branches=None, all=False):
         git_log_command = "git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'"  # --all"
@@ -41,7 +39,6 @@ class Repository:
 
         return git_log_command
 
-
     def log(self, start=None, end=None, branches=None, all=False):
         git_log_command = self.log_command(start, end, branches, all)
         result = subprocess.run(
@@ -49,12 +46,10 @@ class Repository:
         )
         return result.stdout
 
-
     def print_log(self, start=None, end=None, branches=None, all=False):
         git_log_command = self.log_command(start, end, branches, all)
         subprocess.run(git_log_command, cwd=self.directory_path, shell=True)
         print("")
-
 
     def get_tags_for_commit(self, commit: git.Commit):
         tags = []
@@ -62,7 +57,6 @@ class Repository:
             if tag.commit.hexsha == commit.hexsha:
                 tags.append(tag.name)
         return tags
-
 
     def get_branches_for_commit(self, commit: git.Commit):
         branches = []
@@ -75,7 +69,6 @@ class Repository:
                 branches.append(branch.name)
         return branches
 
-
     def _create_commit(self, commit: git.Commit, id=None):
         result = Commit(id)
         result.message = commit.message.strip()
@@ -84,24 +77,21 @@ class Repository:
         result.branches = self.get_branches_for_commit(commit)
         result.comitted_date = commit.committed_datetime
 
-        show_output = self.repo.git.show(commit.hexsha, color='never')
+        show_output = self.repo.git.show(commit.hexsha, color="never")
 
         result.diff = DiffList()
         result.diff.from_show_output(show_output)
 
         return result
 
-
     def show(self, ref):
-        print(self.repo.git.show(ref, color='always'))
-
+        print(self.repo.git.show(ref, color="always"))
 
     def find_commit_by_ref(self, ref):
         if ref in self.repo.refs:
             return self._create_commit(self.repo.commit(ref), ref)
 
         return NotFoundCommit(ref)
-
 
     def find_commits_in_branch(self, branch, end=None):
         if end is not None:
@@ -118,7 +108,6 @@ class Repository:
             commits.append(self._create_commit(commit))
 
         return commits
-
 
     def find_commit(self, commit_definition):
         """
@@ -222,13 +211,12 @@ class Repository:
 
         return NotFoundCommit(commit_definition.id)
 
-
     def get_file_content_from_ref(self, file_path, ref=None):
         if ref is None:
             ref = "HEAD"
 
         # Chech if ref exists from rev-list
-        if ref not in self.repo.git.rev_list(ref, color='never'):
+        if ref not in self.repo.git.rev_list(ref, color="never"):
             raise ValueError(f"Ref {ref} not found")
 
-        return self.repo.git.show(f"{ref}:{file_path}", color='never')
+        return self.repo.git.show(f"{ref}:{file_path}", color="never")

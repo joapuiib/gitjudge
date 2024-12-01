@@ -1,5 +1,3 @@
-import pytest
-
 from gitjudge.entity.checks import FileContentCheck
 from gitjudge.entity.commit import NotFoundCommit, ReferencedItselfCommit
 
@@ -19,10 +17,9 @@ from gitjudge.entity.commit import NotFoundCommit, ReferencedItselfCommit
 * 27f0b5f - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
 """
 
+
 def test_hasFileContent_shouldBeCorrect(repo):
-    check = FileContentCheck({
-        "file1.md": "1\n2"
-    })
+    check = FileContentCheck({"file1.md": "1\n2"})
     commit = repo.find_commit_by_ref("main")
 
     correct = check.validate(commit, repo)
@@ -31,9 +28,7 @@ def test_hasFileContent_shouldBeCorrect(repo):
 
 
 def test_hasNotFileContent_shouldBeNotCorrect(repo):
-    check = FileContentCheck({
-        "file1.md": "1\n3"
-    })
+    check = FileContentCheck({"file1.md": "1\n3"})
     commit = repo.find_commit_by_ref("main")
 
     correct = check.validate(commit, repo)
@@ -42,9 +37,7 @@ def test_hasNotFileContent_shouldBeNotCorrect(repo):
 
 
 def test_givenNotFoundCommit_shouldBeNotCorrect(repo):
-    check = FileContentCheck({
-        "file1.md": "1\n2"
-    })
+    check = FileContentCheck({"file1.md": "1\n2"})
     commit = NotFoundCommit(1)
 
     correct = check.validate(commit, repo)
@@ -53,9 +46,7 @@ def test_givenNotFoundCommit_shouldBeNotCorrect(repo):
 
 
 def test_givenReferencedItselfCommit_shouldBeNotCorrect(repo):
-    check = FileContentCheck({
-        "file1.md": "1\n2"
-    })
+    check = FileContentCheck({"file1.md": "1\n2"})
     commit = ReferencedItselfCommit(1)
 
     correct = check.validate(commit, repo)

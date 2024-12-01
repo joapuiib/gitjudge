@@ -1,6 +1,5 @@
-import pytest
-
 from gitjudge.entity.log_options import LogOptions
+
 
 def testLogOptions_GivenEmptyOptions_ShouldHaveDefaultOptions():
     # Arrange

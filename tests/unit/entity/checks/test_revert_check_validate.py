@@ -1,7 +1,5 @@
-import pytest
-
 from gitjudge.entity.checks import RevertsCheck
-from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommit
+from gitjudge.entity.commit import NotFoundCommit
 
 
 """
@@ -20,6 +18,7 @@ from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommi
 * 27f0b5f - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
 """
 repo = None
+
 
 def test_givenRevertedCommit_shouldBeCorrect(found_commits):
     # Commit 5 is a revert of commit 2

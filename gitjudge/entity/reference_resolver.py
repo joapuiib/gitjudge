@@ -1,18 +1,15 @@
 import re
 
-from gitjudge.formatter import Formatter
-
 from .commit import Commit, NotFoundCommit, ReferencedItselfCommit
-from .definition import Definition
 from .repository import Repository
 
 
 class ReferenceResolver:
-    def __init__(self, repo: Repository):
-        self.references = {}
+    def __init__(self, repo: Repository, references: dict = {}):
+        self.references = references
         self.repo = repo
 
-    def resolve_reference(self, commit_id, reference):
+    def resolve_reference(self, commit_id: str, reference: str) -> Commit:
         if reference and re.match(r"-?\d+", str(reference)):
             if reference in self.references:
                 if reference == commit_id:
@@ -27,4 +24,3 @@ class ReferenceResolver:
             # TODO: Repensar resolve references from repo
             commit = self.repo.find_commit_by_ref(reference)
             return commit
-

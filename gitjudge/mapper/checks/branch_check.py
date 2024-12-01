@@ -3,19 +3,19 @@ from gitjudge.entity.checks import BranchCheck
 
 def map_branch_check(d: dict) -> list:
     if not isinstance(d, dict):
-        raise TypeError('Expected dict object')
+        raise TypeError("Expected dict object")
 
     checks = []
 
     # Branch and branches are mutually exclusive
-    if 'branch' in d and 'branches' in d:
-        raise ValueError('Expected commit cannot have both branch and branches')
+    if "branch" in d and "branches" in d:
+        raise ValueError("Expected commit cannot have both branch and branches")
 
-    branches = d.get('branches', [])
+    branches = d.get("branches", [])
     if branches is not None and not isinstance(branches, list):
         branches = [branches]
 
-    branch = d.get('branch', [])
+    branch = d.get("branch", [])
     if branch is not None and not isinstance(branch, list):
         branch = [branch]
 

@@ -5,6 +5,7 @@ from gitjudge.entity.commit_definition import CommitDefinition
 from gitjudge.entity.diffindex import DiffIndex
 from gitjudge.entity.difflist import DiffList
 
+
 def testFindCommit_GivenNonCommitDefinitionParameter_ShouldRaiseError(empty_repo):
     with pytest.raises(TypeError):
         empty_repo.find_commit(1)
@@ -30,6 +31,7 @@ def testFindCommit_GivenEmptyRepo_ShouldReturnNone(empty_repo):
 * 7cb78bd - (0 seconds ago) 2. modified file1.md - Joan Puigcerver (HEAD -> main, tag: T3, tag: T2)
 * 27f0b5f - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
 """
+
 
 def testFindCommit_GivenNonExistingCommit_ShouldReturnCommit(repo):
     # Arrange
@@ -57,12 +59,14 @@ def testFindCommit_GivenExistingCommit_ShouldReturnCommit(repo):
     assert result.id == "1"
     assert len(result.hash) > 0
     assert result.message == "1. added file1.md"
-    assert result.diff == DiffList({
-        "file1.md": DiffIndex(
-            "file1.md",
-            additions={"1": 1},
-        )
-    })
+    assert result.diff == DiffList(
+        {
+            "file1.md": DiffIndex(
+                "file1.md",
+                additions={"1": 1},
+            )
+        }
+    )
 
 
 def testFindCommit_GivenPatterMessage_ShouldReturnCommit(repo):
@@ -91,7 +95,6 @@ def testFindCommit_GivenExistingCommitThatIsNotInDefaultBranch_ShouldReturnNone(
     # Assert
     assert isinstance(result, NotFoundCommit)
     assert result.id == "3"
-
 
 
 def testFindCommit_GivenExistingCommitThatInSpecificStart_ShouldReturnCommit(repo):
@@ -133,17 +136,12 @@ def testFindCommit_GivenExistingCommitOlderThanEnd_ShouldReturnCommit(repo):
 
     print(repr(result.diff))
 
-
     # Assert
     assert result.id == "2"
     assert result.message == "2. modified file1.md"
-    assert result.diff == DiffList({
-        "file1.md": DiffIndex(
-            "file1.md",
-            additions={"2": 1},
-            deletions={}
-        )
-    })
+    assert result.diff == DiffList(
+        {"file1.md": DiffIndex("file1.md", additions={"2": 1}, deletions={})}
+    )
 
 
 def testFindCommit_GivenExistingCommitStartEndReverseOrder_ShouldReturnOlder(repo):
@@ -224,6 +222,7 @@ def testFindCommit_GivenCommitWithNoTags_ShouldReturnCommitWithNoTags(repo):
     # Assert
     assert result.tags == []
 
+
 def testFindCommit_GivenCommitWithNotFoundStart_ShouldReturnNotFound(repo):
     # Arrange
     expected_commit = CommitDefinition("1")
@@ -237,6 +236,7 @@ def testFindCommit_GivenCommitWithNotFoundStart_ShouldReturnNotFound(repo):
     assert isinstance(result, NotFoundCommit)
     assert result.id == "1"
 
+
 def testFindCommit_GivenCommitWithReferencedItselfStart_ShouldReturnReferencedItself(repo):
     # Arrange
     expected_commit = CommitDefinition("1")
@@ -249,6 +249,7 @@ def testFindCommit_GivenCommitWithReferencedItselfStart_ShouldReturnReferencedIt
     # Assert
     assert isinstance(result, ReferencedItselfCommit)
     assert result.id == "1"
+
 
 def testFindCommit_GivenCommitWithNotFoundEnd_ShouldReturnNotFound(repo):
     # Arrange

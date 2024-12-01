@@ -1,5 +1,3 @@
-import pytest
-
 from gitjudge.entity.diffindex import DiffIndex
 from gitjudge.entity.difflist import DiffList
 
@@ -13,18 +11,20 @@ def test_invert_empty_difflist():
 
 
 def test_invert_additions():
-    difflist = DiffList({
-        "file1.md": DiffIndex(
-            "file1.md",
-            additions={"line1": 1},
-            deletions={},
-        ),
-        "file2.md": DiffIndex(
-            "file2.md",
-            additions={"line2": 1},
-            deletions={},
-        )
-    })
+    difflist = DiffList(
+        {
+            "file1.md": DiffIndex(
+                "file1.md",
+                additions={"line1": 1},
+                deletions={},
+            ),
+            "file2.md": DiffIndex(
+                "file2.md",
+                additions={"line2": 1},
+                deletions={},
+            ),
+        }
+    )
 
     inverted = difflist.invert()
 
@@ -40,18 +40,20 @@ def test_invert_additions():
 
 
 def test_invert_deletions():
-    difflist = DiffList({
-        "file1.md": DiffIndex(
-            "file1.md",
-            additions={},
-            deletions={"line1": 1},
-        ),
-        "file2.md": DiffIndex(
-            "file2.md",
-            additions={},
-            deletions={"line2": 1},
-        )
-    })
+    difflist = DiffList(
+        {
+            "file1.md": DiffIndex(
+                "file1.md",
+                additions={},
+                deletions={"line1": 1},
+            ),
+            "file2.md": DiffIndex(
+                "file2.md",
+                additions={},
+                deletions={"line2": 1},
+            ),
+        }
+    )
 
     inverted = difflist.invert()
 
@@ -62,18 +64,20 @@ def test_invert_deletions():
 
 
 def test_invert_multiple_files():
-    difflist = DiffList({
-        "file1.md": DiffIndex(
-            "file1.md",
-            additions={"line1": 1},
-            deletions={"line2": 1},
-        ),
-        "file2.md": DiffIndex(
-            "file2.md",
-            additions={"line3": 1},
-            deletions={"line4": 1},
-        )
-    })
+    difflist = DiffList(
+        {
+            "file1.md": DiffIndex(
+                "file1.md",
+                additions={"line1": 1},
+                deletions={"line2": 1},
+            ),
+            "file2.md": DiffIndex(
+                "file2.md",
+                additions={"line3": 1},
+                deletions={"line4": 1},
+            ),
+        }
+    )
 
     inverted = difflist.invert()
 

@@ -1,7 +1,4 @@
-import pytest
-
 from gitjudge.entity.checks import SquashCheck
-from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommit
 
 
 """
@@ -20,6 +17,7 @@ from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommi
 * 27f0b5f - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
 """
 repo = None
+
 
 def test_givenSquashedCommits_shouldBeCorrect(found_commits):
     # Commit 9 is squashed from commits 7 and 8

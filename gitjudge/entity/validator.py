@@ -1,10 +1,8 @@
-import re
-
-from colorama import Fore, Style
+from colorama import Fore
 
 from gitjudge.formatter import Formatter
 
-from .commit import Commit, NotFoundCommit, ReferencedItselfCommit
+from .commit import NotFoundCommit
 from .definition import Definition
 from .reference_resolver import ReferenceResolver
 from .repository import Repository
@@ -18,7 +16,6 @@ class Validator:
         self.formatter = formatter
 
         self.resolver = ReferenceResolver(repo)
-
 
     def validate(self):
         for cd in self.definition.commits:
@@ -35,4 +32,3 @@ class Validator:
                 self.formatter.print_commit(self.definition, cd, commit, self.repo)
 
         self.formatter.print_log(self.definition, self.repo)
-

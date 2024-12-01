@@ -1,6 +1,5 @@
-import pytest
-
 from gitjudge.entity.diffindex import DiffIndex
+
 
 def test_create_diff():
     diff = DiffIndex("path")
@@ -52,10 +51,12 @@ def test_add_deletion_and_addition():
     diff.add_addition("line")
     assert diff.deletions == {}
 
+
 def test_eq_emptyIndex():
     diff1 = DiffIndex("path")
     diff2 = DiffIndex("path")
     assert diff1 == diff2
+
 
 def test_eq_sameIndex():
     diff1 = DiffIndex("path")
@@ -66,6 +67,7 @@ def test_eq_sameIndex():
     diff2.add_deletion("line2")
     assert diff1 == diff2
 
+
 def test_merge_additions():
     diff1 = DiffIndex("path")
     diff1.add_addition("line1")
@@ -75,6 +77,7 @@ def test_merge_additions():
     diff1.merge(diff2)
     assert diff1.additions == {"line1": 2}
 
+
 def test_merge_deletions():
     diff1 = DiffIndex("path")
     diff1.add_deletion("line1")
@@ -83,6 +86,7 @@ def test_merge_deletions():
 
     diff1.merge(diff2)
     assert diff1.deletions == {"line1": 2}
+
 
 def test_merge_additions_and_deletions():
     diff1 = DiffIndex("path")

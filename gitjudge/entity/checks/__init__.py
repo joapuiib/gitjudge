@@ -6,3 +6,14 @@ from .file_content_check import FileContentCheck
 from .reverts_check import RevertsCheck
 from .squash_check import SquashCheck
 from .tag_check import TagCheck
+
+__all__ = [
+    BranchCheck,
+    Check,
+    CherryPickCheck,
+    DiffCheck,
+    FileContentCheck,
+    RevertsCheck,
+    SquashCheck,
+    TagCheck,
+]

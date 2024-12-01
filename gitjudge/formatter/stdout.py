@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from colorama import Fore, Style
 
 from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommit
@@ -25,23 +27,23 @@ class StdoutFormatter:
         if commit_definition.start:
             if isinstance(commit_definition.start, NotFoundCommit):
                 print_item(
-                    f"  - Start",
+                    "  - Start",
                     f"({commit_definition.start.id}) {Fore.RED}not found{Fore.RESET}",
                 )
             elif isinstance(commit_definition.start, Commit):
                 print_item(
-                    f"  - Start",
+                    "  - Start",
                     f"({commit_definition.start.id}) {commit_definition.start.short_hash()}",
                 )
 
         if commit_definition.end:
             if isinstance(commit_definition.end, NotFoundCommit):
                 print_item(
-                    f"  - End", f"({commit_definition.end.id}) {Fore.RED}not found{Fore.RESET}"
+                    "  - End", f"({commit_definition.end.id}) {Fore.RED}not found{Fore.RESET}"
                 )
             elif isinstance(commit_definition.end, Commit):
                 print_item(
-                    f"  - End", f"({commit_definition.end.id}) {commit_definition.end.short_hash()}"
+                    "  - End", f"({commit_definition.end.id}) {commit_definition.end.short_hash()}"
                 )
 
         if commit_definition.message:
@@ -103,34 +105,33 @@ class StdoutFormatter:
         for check in commit_definition.checks:
             self.print_check(check, commit, repo)
 
-
     def print_check(self, check, commit, repo):
         f = self.checkFormatter.get(type(check).__name__, self.print_check_fallback)
         f(check, commit, repo)
 
-
     def print_check_fallback(self, check, commit, repo):
         result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
         print(f"  - {check}: {result}")
-
 
     def print_branch_check(self, check, commmit, repo):
         for branch, correct in check.branches.items():
             result = f"{Fore.GREEN}YES{Fore.RESET}" if correct else f"{Fore.RED}NO{Fore.RESET}"
             print(f"  - Has {Fore.YELLOW}'{branch}'{Fore.RESET} branch? {result}")
 
-
     def print_cherry_pick_check(self, check, commit, repo):
         if isinstance(check.reference, NotFoundCommit):
-            print(f"- Cherry-picked from commit ({check.reference.id}) {Fore.RED}not found{Fore.RESET}.")
+            print(
+                f"- Cherry-picked from commit ({check.reference.id}) {Fore.RED}not found{Fore.RESET}."
+            )
         elif isinstance(check.reference, ReferencedItselfCommit):
             print(f"- Cherry-picked from commit {Fore.RED}can't reference itself{Fore.RESET}.")
         else:
-            result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+            result = (
+                f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+            )
             _id = check.reference.id
             _hash = check.reference.short_hash()
-            print(f"- Is cherry-picked from {Fore.YELLOW}'({_id}) {_hash}'{Fore.RESET}? {revert_result}")
-
+            print(f"- Is cherry-picked from {Fore.YELLOW}'({_id}) {_hash}'{Fore.RESET}? {result}")
 
     def print_diff_check(self, check, commit, repo):
         diff_correct = check.correct
@@ -159,10 +160,9 @@ class StdoutFormatter:
                     for line, count in diff_index.deletions.items():
                         print(f"        {count}-: {line}")
 
-
     def print_file_content_check(self, check, commit, repo):
         file_content_correct = check.correct
-        file_content_result = (
+        result = (
             f"{Fore.GREEN}YES{Fore.RESET}" if file_content_correct else f"{Fore.RED}NO{Fore.RESET}"
         )
         for file, correct in check.results.items():
@@ -172,7 +172,9 @@ class StdoutFormatter:
                 print(f"    {Fore.YELLOW}Expected content:{Fore.RESET}")
                 expected_content = check.file_contents[file]
                 expected_content = check.strip_lines(expected_content)
-                expected_content = "\n".join([f"      {line}" for line in expected_content.split("\n")])
+                expected_content = "\n".join(
+                    [f"      {line}" for line in expected_content.split("\n")]
+                )
                 print(f"{expected_content}")
                 print(f"    {Fore.YELLOW}Actual content:{Fore.RESET}")
                 actual_content = repo.get_file_content_from_ref(file, commit.hash)
@@ -180,30 +182,30 @@ class StdoutFormatter:
                 actual_content = "\n".join([f"      {line}" for line in actual_content.split("\n")])
                 print(f"{actual_content}")
 
-
     def print_reverts_check(self, check, commit, repo):
         if isinstance(check.reference, NotFoundCommit):
             print(f"- Reverting commit ({check.reference.id}) {Fore.RED}not found{Fore.RESET}.")
         elif isinstance(check.reference, ReferencedItselfCommit):
             print(f"- Reverting commit {Fore.RED}can't reference itself{Fore.RESET}.")
         else:
-            result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+            result = (
+                f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+            )
             _id = check.reference.id
             _hash = check.reference.short_hash()
-            print(f"- Reverts {Fore.YELLOW}'({_id}) {_hash}'{Fore.RESET}? {revert_result}")
-
+            print(f"- Reverts {Fore.YELLOW}'({_id}) {_hash}'{Fore.RESET}? {result}")
 
     def print_squash_check(self, check, commit, repo):
-        squash_result = f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
-        squash_output = ", ".join([f"{commit.short_hash()}" for commit in check_result.references])
+        squash_result = (
+            f"{Fore.GREEN}YES{Fore.RESET}" if check.correct else f"{Fore.RED}NO{Fore.RESET}"
+        )
+        squash_output = ", ".join([f"{commit.short_hash()}" for commit in check.references])
         print(f"- Does squash {Fore.YELLOW}'{squash_output}'{Fore.RESET}? {squash_result}")
-
 
     def print_tag_check(self, check, commit, repo):
         for tag, correct in check.tags.items():
             result = f"{Fore.GREEN}YES{Fore.RESET}" if correct else f"{Fore.RED}NO{Fore.RESET}"
             print(f"- Has {Fore.YELLOW}'{tag}'{Fore.RESET} tag? {result}")
-
 
     def print_log(self, definition: Definition, repo: Repository):
         first_commit = None
@@ -221,5 +223,5 @@ class StdoutFormatter:
             start=first_commit,
             end=last_commit,
             branches=definition.log_options.branches,
-            all=definition.log_options.all
+            all=definition.log_options.all,
         )

@@ -1,7 +1,4 @@
-import pytest
-
 from gitjudge.entity.commit import Commit, NotFoundCommit
-from gitjudge.entity.repository import Repository
 
 
 def testFindByRef_givenEmptyRepo_expectNotFound(empty_repo):
@@ -11,11 +8,13 @@ def testFindByRef_givenEmptyRepo_expectNotFound(empty_repo):
     assert isinstance(commit, NotFoundCommit)
     assert commit.id == "main"
 
+
 def testFindByRef_givenInexistentRef_expectNotFound(repo):
     commit = repo.find_commit_by_ref("inexistent")
 
     assert isinstance(commit, NotFoundCommit)
     assert commit.id == "inexistent"
+
 
 def testFindByRef_givenRef_expectCommit(repo):
     commit = repo.find_commit_by_ref("main")

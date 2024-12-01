@@ -1,5 +1,3 @@
-from gitjudge.entity.commit import Commit
-
 from .check import Check
 
 
@@ -9,14 +7,11 @@ class TagCheck(Check):
         for tag in tags:
             self.tags[tag] = False
 
-
     def __str__(self):
         return f"TagCheck({self.tags})"
 
-
     def __repr__(self):
         return self.__str__()
-
 
     def validate(self, commit, repo) -> bool:
         super().validate(commit, repo)

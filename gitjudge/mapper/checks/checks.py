@@ -1,7 +1,3 @@
-from gitjudge.entity.checks import Check
-from gitjudge.entity.diffindex import DiffIndex
-from gitjudge.entity.difflist import DiffList
-
 from .branch_check import map_branch_check
 from .cherry_pick_check import map_cherry_pick_check
 from .diff_check import map_diff_check
@@ -13,7 +9,7 @@ from .tag_check import map_tag_check
 
 def map_checks(d: dict) -> list:
     if not isinstance(d, dict):
-        raise TypeError('Expected dict object')
+        raise TypeError("Expected dict object")
 
     checks = []
 

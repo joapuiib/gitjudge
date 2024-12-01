@@ -6,18 +6,14 @@ class Check:
         self.checked = False
         self.correct = False
 
-
     def __str__(self):
-        return f"Check()"
-
+        return "Check()"
 
     def __repr__(self):
         return self.__str__()
 
-
     def resolve_references(self, commit_id, resolver):
         pass
-
 
     def validate(self, commit: Commit, repo) -> bool:
         if not isinstance(commit, Commit):

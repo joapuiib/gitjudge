@@ -19,24 +19,21 @@ class DiffIndex:
             deletions = {}
         self.deletions = deletions
 
-
     def __str__(self):
         args = []
         args.append(f"file_path={self.file_path}")
         if self.additions:
-            additions = (f"additions=")
+            additions = "additions="
             additions += ", ".join([f"{times}+: {line}" for line, times in self.additions.items()])
             args.append(additions)
         if self.deletions:
-            deletions = (f"deletions=")
+            deletions = "deletions="
             deletions += ", ".join([f"{times}-: {line}" for line, times in self.deletions.items()])
             args.append(deletions)
         return f"DiffIndex({', '.join(args)})"
 
-
     def __repr__(self):
         return str(self)
-
 
     def empty(self):
         """
@@ -44,7 +41,6 @@ class DiffIndex:
         """
 
         return len(self.additions) == 0 and len(self.deletions) == 0
-
 
     def add_addition(self, line):
         """
@@ -92,7 +88,6 @@ class DiffIndex:
         same_deletions = self.deletions == other.deletions
         return same_file and same_additions and same_deletions
 
-
     def clone(self):
         """
         Return a new DiffIndex with the same file_path, additions and deletions.
@@ -102,7 +97,6 @@ class DiffIndex:
         new_diff_index.additions = self.additions.copy()
         new_diff_index.deletions = self.deletions.copy()
         return new_diff_index
-
 
     def merge(self, other):
         """
@@ -116,7 +110,6 @@ class DiffIndex:
             for _ in range(times):
                 self.add_deletion(line)
 
-
     def invert(self):
         """
         Invert the additions and deletions of this DiffIndex.
@@ -124,7 +117,6 @@ class DiffIndex:
         aux = self.additions
         self.additions = self.deletions
         self.deletions = aux
-
 
     def contains(self, other):
         """

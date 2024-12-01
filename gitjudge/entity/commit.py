@@ -1,5 +1,3 @@
-import re
-
 from .difflist import DiffList
 
 
@@ -21,7 +19,6 @@ class Commit:
     def short_hash(self):
         return self.hash[:7]
 
-
     def short_message(self):
         return self.message.split("\n")[0]
 
@@ -35,26 +32,22 @@ class Commit:
         if self.branches:
             args.append(f"branches={self.branches}")
         if self.tags:
-            args.append(f"tas={self.tags}")
+            args.append(f"tags={self.tags}")
         if self.parents:
             args.append(f"parents={self.parents}")
         return f"Commit({', '.join(args)})"
 
-
     def __repr__(self):
         return self.__str__()
 
-
     # def show_diff(self, colored=True):
     #     print(self.diff(colored=colored))
-
 
     # def get_diff(self, colored=False):
     #     if not colored:
     #         ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
     #         return ansi_escape.sub('', self.diff)
     #     return self.diff
-
 
     def is_cherry_picked_from(self, other_commit):
         """
@@ -75,7 +68,6 @@ class Commit:
             return False
         return self.diff == other_commit.diff
 
-
     def reverts(self, commit):
         """
         Check if this commit reverts the given commit.
@@ -93,7 +85,6 @@ class Commit:
         """
 
         return self.diff == commit.diff.invert()
-
 
     def squashes(self, commits):
         """
@@ -115,7 +106,6 @@ class Commit:
             merged_diff.merge(commit.diff)
 
         return self.diff == merged_diff
-
 
     def get_file_content(self, file):
         with open(file, "r") as f:

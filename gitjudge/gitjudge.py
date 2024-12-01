@@ -2,7 +2,7 @@
 import argparse
 
 from gitjudge.entity.repository import Repository
-from gitjudge.entity.validator import Repository, Validator
+from gitjudge.entity.validator import Validator
 from gitjudge.formatter import StdoutFormatter
 from gitjudge.mapper.definition import load_definition
 
@@ -18,6 +18,7 @@ class GitJudge:
         validator = Validator(self.args, self.definition, repo, self.formatter)
         validator.validate()
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("definition_file", help="Path to the definition file.")
@@ -29,5 +30,6 @@ def main():
     for repo_dir in args.dir:
         gitjudge.validate(repo_dir)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -1,7 +1,5 @@
-import pytest
-
 from gitjudge.entity.checks import CherryPickCheck
-from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommit
+from gitjudge.entity.commit import NotFoundCommit, ReferencedItselfCommit
 
 
 """

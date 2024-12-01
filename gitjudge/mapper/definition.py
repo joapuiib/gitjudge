@@ -8,7 +8,7 @@ from gitjudge.mapper.log_options import map_log_options
 
 
 def parse_date(date_str):
-    formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M" ,"%Y-%m-%d"]
+    formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d"]
     for fmt in formats:
         try:
             return datetime.strptime(date_str, fmt)
@@ -42,6 +42,7 @@ def map_definition(d: dict) -> Definition:
         definition.log_options = map_log_options(d["log"])
 
     return definition
+
 
 def load_definition(file_path: str) -> Definition:
     """

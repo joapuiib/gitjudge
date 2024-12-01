@@ -1,5 +1,3 @@
-import pytest
-
 from gitjudge.entity.checks import DiffCheck
 from gitjudge.entity.diffindex import DiffIndex
 from gitjudge.entity.difflist import DiffList
@@ -21,15 +19,9 @@ from gitjudge.entity.difflist import DiffList
 """
 repo = None
 
+
 def test_hasDiff_shouldBeCorrect(found_commits):
-    check = DiffCheck(
-        diff=DiffList({
-            "file1.md": DiffIndex(
-                "file1.md",
-                additions={"1": 1}
-            )
-        })
-    )
+    check = DiffCheck(diff=DiffList({"file1.md": DiffIndex("file1.md", additions={"1": 1})}))
     commit = found_commits[1]
 
     correct = check.validate(commit, repo)
@@ -38,14 +30,7 @@ def test_hasDiff_shouldBeCorrect(found_commits):
 
 
 def test_hasNotDiff_shouldBeNotCorrect(found_commits):
-    check = DiffCheck(
-        diff=DiffList({
-            "file1.md": DiffIndex(
-                "file1.md",
-                additions={"1": 2}
-            )
-        })
-    )
+    check = DiffCheck(diff=DiffList({"file1.md": DiffIndex("file1.md", additions={"1": 2})}))
     commit = found_commits[1]
 
     correct = check.validate(commit, repo)

@@ -2,12 +2,10 @@ from .diffindex import DiffIndex
 
 
 class DiffList:
-
     def __init__(self, diffs=None):
         if diffs is None:
             diffs = {}
         self.diffs = diffs
-
 
     def __str__(self):
         args = []
@@ -15,24 +13,19 @@ class DiffList:
             args.append(str(diff))
         return f"DiffList({', '.join(args)})"
 
-
     def __repr__(self):
         return str(self)
-
 
     def __eq__(self, other):
         if not isinstance(other, DiffList):
             return False
         return self.diffs == other.diffs
 
-
     def add(self, diffindex):
         self.diffs[diffindex.file_path] = diffindex
 
-
     def items(self):
         return self.diffs.items()
-
 
     def empty(self):
         if len(self.diffs) == 0:
@@ -40,12 +33,10 @@ class DiffList:
 
         return all([diff.empty() for diff in self.diffs.values()])
 
-
     def clone(self):
         new_diff_list = DiffList()
         new_diff_list.diffs = {k: v.clone() for k, v in self.diffs.items()}
         return new_diff_list
-
 
     def merge(self, other):
         for file_path, diff in other.diffs.items():
@@ -53,7 +44,6 @@ class DiffList:
                 self.diffs[file_path].merge(diff)
             else:
                 self.diffs[file_path] = diff.clone()
-
 
     def add_addition(self, file_path, line):
         if file_path in self.diffs:
@@ -63,7 +53,6 @@ class DiffList:
             diff.add_addition(line)
             self.diffs[file_path] = diff
 
-
     def add_deletion(self, file_path, line):
         if file_path in self.diffs:
             self.diffs[file_path].add_deletion(line)
@@ -71,7 +60,6 @@ class DiffList:
             diff = DiffIndex(file_path)
             diff.add_deletion(line)
             self.diffs[file_path] = diff
-
 
     def from_show_output(self, show_output):
         lines = show_output.split("\n")
@@ -103,13 +91,11 @@ class DiffList:
                 elif line.startswith("-"):
                     self.diffs[file_path].add_deletion(line[1:])
 
-
     def invert(self):
         new = self.clone()
         for diff in new.diffs.values():
             diff.invert()
         return new
-
 
     def contains(self, other):
         for other_file_path, other_diff in other.diffs.items():

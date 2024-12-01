@@ -8,18 +8,14 @@ class CherryPickCheck(Check):
     def __init__(self, reference):
         self.reference = reference
 
-
     def __str__(self):
-        return f"CherryPickCheck(reference={reference})"
-
+        return f"CherryPickCheck(reference={self.reference})"
 
     def __repr__(self):
         return self.__str__()
 
-
     def resolve_references(self, commit_id, resolver):
         self.reference = resolver.resolve_reference(commit_id, self.reference)
-
 
     def validate(self, commit: Commit, repo: Repository) -> bool:
         super().validate(commit, repo)

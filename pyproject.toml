@@ -93,6 +93,7 @@ check = [
 format = [
     "isort -q gitjudge",
     "black -q gitjudge",
+    "ruff format gitjudge",
 ]
 
 [tool.black]

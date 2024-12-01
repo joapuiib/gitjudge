@@ -1,4 +1,4 @@
-from gitjudge.entity.commit import Commit, NotFoundCommit, ReferencedItselfCommit
+from gitjudge.entity.commit import NotFoundCommit, ReferencedItselfCommit
 
 from .check import Check
 
@@ -10,14 +10,11 @@ class FileContentCheck(Check):
         for file_path in self.file_contents.keys():
             self.results[file_path] = False
 
-
     def __str__(self):
         return f"FileContentCheck({self.file_contents})"
 
-
     def __repr__(self):
         return self.__str__()
-
 
     def validate(self, commit, repo) -> bool:
         super().validate(commit, repo)
@@ -36,7 +33,6 @@ class FileContentCheck(Check):
             self.correct = self.correct and self.results[file_path]
 
         return self.correct
-
 
     def strip_lines(self, content: str) -> str:
         return "\n".join([line.strip() for line in content.split("\n") if line.strip()])

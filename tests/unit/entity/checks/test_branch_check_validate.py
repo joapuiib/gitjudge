@@ -1,5 +1,3 @@
-import pytest
-
 from gitjudge.entity.checks import BranchCheck
 
 """
@@ -18,6 +16,7 @@ from gitjudge.entity.checks import BranchCheck
 * 27f0b5f - (0 seconds ago) 1. added file1.md - Joan Puigcerver (tag: T1)
 """
 repo = None
+
 
 def test_hasSingleBranch_shouldBeCorrect(found_commits):
     check = BranchCheck(["main"])
