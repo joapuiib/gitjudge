@@ -77,7 +77,8 @@ class StdoutFormatter:
         message = commit.short_message()
         commit_date = commit.committed_date
 
-        color_title = Fore.GREEN if correct else Fore.RED
+        # color_title = Fore.GREEN if correct else Fore.RED
+        color_title = Fore.WHITE
         print(
             f"==== {Style.BRIGHT}{Fore.BLUE}{short_hash}{Fore.RESET} - {color_title}{message}{Fore.RESET}{Style.RESET_ALL} ====",
             end=" ",
