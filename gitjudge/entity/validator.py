@@ -28,6 +28,7 @@ class Validator:
                 print(f"==== {Fore.RED}Commit {cd.id} not found in repository{Fore.RESET}")
                 self.formatter.print_commit_definition(cd)
             else:
+                self.resolver.add_commit(commit)
                 cd.validate(commit, self.repo)
                 self.formatter.print_commit(self.definition, cd, commit, self.repo)
 

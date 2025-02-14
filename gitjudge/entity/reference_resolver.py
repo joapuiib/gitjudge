@@ -9,6 +9,10 @@ class ReferenceResolver:
         self.references = references
         self.repo = repo
 
+
+    def add_commit(self, commit: Commit):
+        self.references[commit.id] = commit
+
     def resolve_reference(self, commit_id: str, reference: str) -> Commit:
         if reference and re.match(r"-?\d+", str(reference)):
             if reference in self.references:
